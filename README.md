@@ -13,6 +13,7 @@ install filament:
 composer require filament/filament:"^3.3" -W
 php artisan filament:install --panels
 ``
+
 untuk akses nya nanti seperti ini: locahost:port/admin
 
 install spatie:
@@ -61,6 +62,7 @@ Kemudian di config/auth.php tambahkan ini:
 Konfigurasi Spatie Permission -> config/permission.php
 
 ``
+
 'guards' => ['web', 'backend'],
 
 ``

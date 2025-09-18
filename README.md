@@ -62,7 +62,28 @@ Kemudian di config/auth.php tambahkan ini:
 Konfigurasi Spatie Permission -> config/permission.php
 
 ``
-
 'guards' => ['web', 'backend'],
+``
 
+create seeder:
+``
+php artisan make:seeder BackendUserSeeder
+``
+
+``
+php artisan db:seed --class=BackendUserSeeder
+
+``
+
+buat seeder permission: 
+``
+php artisan make:seeder PermissionSeeder
+php artisan db:seed --class=PermissionSeeder
+
+``
+
+buat seeder role:
+``
+php artisan make:seeder RoleSeeder
+php artisan db:seed --class=RoleSeeder
 ``

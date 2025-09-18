@@ -94,3 +94,46 @@ maka tambahkan ini di adminpanelprovider.php
 ``
  ->authGuard('backend')    
  ``
+
+ ## Memastikan code sesuai standar php dengan install sniffer
+
+ jalankan ini:
+ ``
+ composer require --dev squizlabs/php_codesniffer
+``
+
+kemudian jalankna ini juga di terminal untuk standar nya:
+
+``
+vendor/bin/phpcs --config-set default_standard PSR12
+
+``
+
+kemudian pada composer.json tambahkan code ini:
+
+``
+"scripts": {
+    "lint": "vendor/bin/phpcs --ignore=vendor/*,storage/*,database/migrations/* --extensions=php app/ routes/ database/",
+    "lint:fix": "vendor/bin/phpcbf --ignore=vendor/*,storage/* ,database/migrations/* --extensions=php app/ routes/ database/"
+}
+``
+
+```
+lint → cek kode tanpa mengubah apa-apa.
+
+lint:fix → otomatis perbaiki kode sesuai standar PSR-12.
+
+--ignore=vendor/*,storage/* → skip folder vendor dan storage supaya lebih cepat.
+
+--extensions=php → cuma cek file .php.
+
+app/ routes/ database/ → cuma cek folder penting, bukan seluruh project.
+
+```
+
+nah nanti jika ingin cek code style sesuai standar atau tidak tinggal jalankan perintah ini:
+
+``
+composer lint → ngecek coding style.
+composer lint:fix → memperbaiki otomatis sesuai standar PSR-12.
+``

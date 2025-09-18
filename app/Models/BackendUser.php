@@ -9,7 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class BackendUser extends Authenticatable
 {
-    use Notifiable, HasRoles;
+    use Notifiable;
+    use HasRoles;
 
     protected $guard_name = 'backend';
     protected $fillable = ['name','email','password'];

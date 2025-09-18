@@ -87,3 +87,10 @@ buat seeder role:
 php artisan make:seeder RoleSeeder
 php artisan db:seed --class=RoleSeeder
 ``
+
+jika cms auth menggunakan tabel berbeda, misal backenduser
+maka tambahkan ini di adminpanelprovider.php
+
+``
+ ->authGuard('backend')    
+ ``

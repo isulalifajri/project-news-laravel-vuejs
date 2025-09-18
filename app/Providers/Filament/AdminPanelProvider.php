@@ -29,7 +29,6 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->authGuard('backend')          // <-- pakai guard backend
-            ->user(BackendUser::class)      // <-- pakai model BackendUser
             ->colors([
                 'primary' => Color::Amber,
             ])

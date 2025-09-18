@@ -134,7 +134,7 @@ app/ routes/ database/ → cuma cek folder penting, bukan seluruh project.
 
 nah nanti jika ingin cek code style sesuai standar atau tidak tinggal jalankan perintah ini:
 
-``
+```
 composer lint → ngecek coding style.
 composer lint:fix → memperbaiki otomatis sesuai standar PSR-12.
-``
+```

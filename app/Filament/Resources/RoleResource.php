@@ -67,6 +67,13 @@ class RoleResource extends Resource
             Tables\Columns\BadgeColumn::make('permissions.name')
                 ->label('Permissions')
                 ->separator(', '),
+           Tables\Columns\BadgeColumn::make('users_count')
+            ->label('Users')
+                ->getStateUsing(fn ($record) => \App\Models\BackendUser::role($record->name)->count())
+                ->colors([
+                    'info' => fn ($state) => $state > 0, // hijau jika >0
+                    'gray' => fn ($state) => $state == 0, // abu-abu jika 0
+                ])
         ])
         ->actions([
             Tables\Actions\EditAction::make(),

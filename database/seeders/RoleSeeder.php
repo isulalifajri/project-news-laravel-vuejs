@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleSeeder extends Seeder
 {
@@ -22,6 +23,10 @@ class RoleSeeder extends Seeder
         foreach ($roles as $role) {
             Role::firstOrCreate(['name' => $role, 'guard_name' => 'backend']);
         }
+
+        // === Super Admin: semua permission ===
+        $super = Role::findByName('super-admin', 'backend');
+        $super->syncPermissions(Permission::all());
 
         // Assign permission ke role tertentu
         $editor = Role::findByName('editor', 'backend');

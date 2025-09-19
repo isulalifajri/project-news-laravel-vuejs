@@ -102,6 +102,18 @@ maka tambahkan ini di adminpanelprovider.php
 
  ```
 
+ tambahin view detail
+
+ ```
+ php artisan make:filament-page ViewPost --resource=PostResource --type=ViewRecord
+
+ ```
+
+ di resource nambahin ini juga:
+ ``
+ 'view' => Pages\ViewPost::route('/{record}'),
+ ``
+
  ## Memastikan code sesuai standar php dengan install sniffer
 
 jalankan ini:

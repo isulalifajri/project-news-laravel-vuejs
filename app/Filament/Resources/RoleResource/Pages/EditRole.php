@@ -51,10 +51,10 @@ class EditRole extends EditRecord
         return [
             // Actions\DeleteAction::make(),
             Actions\Action::make('back')
-            ->label('Back')
-            ->color('primary')
-            ->icon('heroicon-o-arrow-left')
-            ->url(static::getResource()::getUrl('index'))
+                ->label('Back')
+                ->color('primary')
+                ->icon('heroicon-o-arrow-left')
+                ->url(static::getResource()::getUrl('index'))
         ];
     }
 }

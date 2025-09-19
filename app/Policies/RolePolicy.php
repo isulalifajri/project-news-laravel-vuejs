@@ -55,7 +55,7 @@ class RolePolicy
      */
     public function deleteAny(BackendUser $BackendUser): bool
     {
-        return $BackendUser->can('delete_any_role');
+        return true;
     }
 
     /**
@@ -63,7 +63,7 @@ class RolePolicy
      */
     public function forceDelete(BackendUser $BackendUser, Role $role): bool
     {
-        return $BackendUser->can('{{ ForceDelete }}');
+        return true;
     }
 
     /**

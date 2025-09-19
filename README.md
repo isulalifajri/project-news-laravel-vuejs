@@ -95,6 +95,13 @@ maka tambahkan ini di adminpanelprovider.php
  ->authGuard('backend')    
  ``
 
+ perintah untuk membut filament dengan crud nya
+
+ ```
+ php artisan make:filament-resource Category --generate
+
+ ```
+
  ## Memastikan code sesuai standar php dengan install sniffer
 
 jalankan ini:

@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\Permission\Models\Role;
+use Filament\Forms\Components\Select;
 
 class BackendUserResource extends Resource
 {
@@ -30,6 +32,12 @@ class BackendUserResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Select::make('roles')
+                    ->label('Roles')
+                    ->multiple() // supaya bisa pilih banyak role
+                    ->required()
+                    ->options(Role::all()->pluck('name', 'id')->toArray()) // ambil semua role
+                    ->preload(),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required()
@@ -45,6 +53,13 @@ class BackendUserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
+                Tables\Columns\BadgeColumn::make('roles')
+                    ->label('Roles')
+                    ->getStateUsing(fn ($record) => $record->roles->pluck('name')->toArray())
+                    ->separator(', ')
+                    ->colors([
+                        'info',
+                    ]),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -59,6 +74,7 @@ class BackendUserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

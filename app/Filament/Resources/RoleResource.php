@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class RoleResource extends Resource
 {
@@ -20,21 +21,43 @@ class RoleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-     public static function form(Form $form): Form
+    public static function form(Form $form): Form
     {
-        return $form->schema([
+        // Ambil semua permission dengan guard backend, group berdasarkan field 'groups'
+        $groups = Permission::where('guard_name', 'backend')
+            ->get()
+            ->groupBy(fn ($p) => $p->groups ?? 'other');
+
+        $permissionFields = [];
+
+        foreach ($groups as $groupName => $perms) {
+            $slug = \Illuminate\Support\Str::slug($groupName, '_');
+
+            $permissionFields[] = Forms\Components\Fieldset::make(ucfirst($groupName))
+                ->schema([
+                    Forms\Components\CheckboxList::make('permissions_' . $slug)
+                        ->options($perms->pluck('name', 'id')->toArray())
+                        ->columns(2)
+                        ->afterStateHydrated(function ($component, $state, $record) use ($perms) {
+                            if ($record) {
+                                // Set state checkbox sesuai permission yang sudah dimiliki role ini
+                                $component->state(
+                                    $record->permissions()
+                                        ->whereIn('id', $perms->pluck('id'))
+                                        ->pluck('id')
+                                        ->toArray()
+                                );
+                            }
+                        }),
+                ]);
+        }
+
+        return $form->schema(array_merge([
             Forms\Components\TextInput::make('name')
                 ->label('Role Name')
                 ->required()
                 ->maxLength(255),
-
-            Forms\Components\Select::make('permissions')
-                ->label('Permissions')
-                ->multiple()
-                ->preload()
-                ->relationship('permissions', 'name')
-                ->options(fn () => Permission::pluck('name', 'id')->toArray()),
-        ]);
+        ], $permissionFields));
     }
 
     public static function table(Table $table): Table

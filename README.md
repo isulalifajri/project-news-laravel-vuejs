@@ -157,3 +157,97 @@ nah nanti jika ingin cek code style sesuai standar atau tidak tinggal jalankan p
 composer lint → ngecek coding style.
 composer lint:fix → memperbaiki otomatis sesuai standar PSR-12.
 ```
+
+## Install vue js dengan inertia
+
+dokumentasi lengkap konjungi link ini: `https://inertiajs.com/server-side-setup`
+
+```
+composer require inertiajs/inertia-laravel
+```
+``
+php artisan inertia:middleware
+``
+
+Client Side
+
+docs: `https://inertiajs.com/client-side-setup`
+
+```
+npm install @inertiajs/vue3
+```
+
+setelah selesai, buat folder dan file di directory ini: resources/js/pages/Home.vue
+
+kemudian di route web nya tambahkan ini:
+
+```
+use Inertia\Inertia;
+
+Route::get('/', function () {
+    return Inertia::render('Home');
+});
+
+```
+
+install plugin vite: `https://vite.dev/plugins/`
+
+```
+npm i @vitejs/plugin-vue
+```
+
+pad file `vite.config.js` tambahkan ini:
+
+```
+import vue from '@vitejs/plugin-vue'
+vue(), -> didalam plugins
+
+```
+
+Laravel versi 12 nggak vite katanya, dan katanya pake mix jadi kita harus nginstall perintah ini:
+
+```
+npm install laravel-mix --save-dev
+
+```
+
+buat file ini di root project: `webpack.mix.js`
+
+kemudian isi seperti ini:
+
+```
+const mix = require('laravel-mix');
+
+mix.js('resources/js/app.js', 'public/js')
+   .vue()
+   .postCss('resources/css/app.css', 'public/css', [
+       //
+   ]);
+```
+
+Ubah `resources/views/app.blade.php` jadi pakai Mix helper:
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Berita App</title>
+    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+    @inertiaHead
+</head>
+<body>
+    @inertia
+    <script src="{{ mix('/js/app.js') }}"></script>
+</body>
+</html>
+
+```
+
+Build:
+
+```
+npm install
+npm run dev
+
+```

@@ -251,3 +251,23 @@ npm install
 npm run dev
 
 ```
+
+## Install Tailwindcss
+docs: `https://tailwindcss.com/docs/installation/using-vite`
+```
+npm install tailwindcss @tailwindcss/vite
+```
+
+kemudian di vite.config.js tambahkan ini:
+```
+import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
+})
+```
+
+diblade layout: `@vite(['resources/css/app.css', 'resources/js/app.js'])` 

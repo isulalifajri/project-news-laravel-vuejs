@@ -33,8 +33,8 @@ class PostResource extends Resource
                         Forms\Components\TextInput::make('title')
                             ->required()
                             ->live(onBlur: true)
-                            ->afterStateUpdated(function ($operation, $state, Set $set) {
-                                if ($operation === 'edit') return;
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                // if ($operation === 'edit') return;
                                 $slug = Str::slug($state);
                                 while (Post::where('slug', $slug)->exists()) {
                                     $slug .= '-' . rand(1, 9) . Str::lower(Str::random(2));

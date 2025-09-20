@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class TagResource extends Resource
 {
@@ -28,16 +31,15 @@ class TagResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(150)
-                    ->afterStateUpdated(function ($state, $set, $record) {
-                        // Hanya generate slug saat create, jangan saat edit
-                        if (!$record) {
-                            $slug = \Illuminate\Support\Str::slug($state);
-                            $count = \App\Models\Tag::where('slug', 'like', $slug . '%')->count();
-                            if ($count > 0) {
-                                $slug .= '-' . rand(1,9) . \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(2));
-                            }
-                            $set('slug', $slug);
+                    ->unique(Tag::class, 'name', ignoreRecord: true)
+                    ->afterStateUpdated(function ($state, Set $set) {
+                        $slug = Str::slug($state);
+                        $exists = DB::table('tags')->where('slug', $slug)->exists();
+
+                        if ($exists) {
+                            $slug .= '-' . rand(1, 9) . Str::lower(Str::random(2));
                         }
+                        $set('slug', $slug);
                     }),
                 
                 Forms\Components\TextInput::make('slug')

@@ -204,7 +204,7 @@ vue(), -> didalam plugins
 
 ```
 
-Laravel versi 12 nggak vite katanya, dan katanya pake mix jadi kita harus nginstall perintah ini:
+Jika ingin menggunakan laravel mix jalankan perintah ini:
 
 ```
 npm install laravel-mix --save-dev

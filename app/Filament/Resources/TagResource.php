@@ -41,7 +41,7 @@ class TagResource extends Resource
                         }
                         $set('slug', $slug);
                     }),
-                
+
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->unique(Tag::class, 'slug', ignoreRecord: true)

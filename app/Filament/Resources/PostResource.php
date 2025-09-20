@@ -58,7 +58,7 @@ class PostResource extends Resource
                             ->default(fn () => auth('backend')->user()?->name)
                             ->afterStateHydrated(function ($component, $state, $record) {
                                 if ($record) {
-                                    $component->state($record->backendUser?->name); 
+                                    $component->state($record->backendUser?->name);
                                 }
                             })
                             ->readOnly()

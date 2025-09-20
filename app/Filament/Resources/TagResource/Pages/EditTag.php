@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Filament\Resources\PostResource\Pages;
+namespace App\Filament\Resources\TagResource\Pages;
 
-use App\Filament\Resources\PostResource;
+use App\Filament\Resources\TagResource;
 use Filament\Actions;
-use Filament\Resources\Pages\ViewRecord;
+use Filament\Resources\Pages\EditRecord;
 
-class ViewPost extends ViewRecord
+class EditTag extends EditRecord
 {
-    protected static string $resource = PostResource::class;
+    protected static string $resource = TagResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
             Actions\Action::make('back')
                 ->label('Back')
                 ->color('primary')

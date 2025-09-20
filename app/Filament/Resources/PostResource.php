@@ -92,6 +92,15 @@ class PostResource extends Resource
 
                         Forms\Components\DateTimePicker::make('published_at')->default(now()),
                     ]),
+
+
+                Forms\Components\Section::make('Tags')
+                    ->schema([
+                        Forms\Components\Select::make('tags')
+                            ->multiple()
+                            ->relationship('tags', 'name')
+                            ->preload(),
+                    ]),
             ]);
     }
 

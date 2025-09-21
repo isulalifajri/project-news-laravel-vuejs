@@ -271,3 +271,7 @@ export default defineConfig({
 ```
 
 diblade layout: `@vite(['resources/css/app.css', 'resources/js/app.js'])` 
+
+install fontawesome: `npm install @fortawesome/fontawesome-free`
+
+kemudian di app.js tambahkan ini: `import '@fortawesome/fontawesome-free/css/all.min.css'`

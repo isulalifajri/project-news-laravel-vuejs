@@ -4,6 +4,9 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    // return view('welcome');
-        return Inertia::render('Home');
+    return Inertia::render('Home');
+});
+
+Route::get('/ct', function () {
+    return Inertia::render('Categories/index');
 });

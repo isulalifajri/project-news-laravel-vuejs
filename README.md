@@ -275,3 +275,27 @@ diblade layout: `@vite(['resources/css/app.css', 'resources/js/app.js'])`
 install fontawesome: `npm install @fortawesome/fontawesome-free`
 
 kemudian di app.js tambahkan ini: `import '@fortawesome/fontawesome-free/css/all.min.css'`
+
+
+Install swiper in page Home
+
+```
+npm install swiper
+
+```
+
+kemudian di page home tambahkan ini di dalam script setup:
+
+```
+import AppLayout from '@/Layouts/AppLayout.vue'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+
+import { Navigation, Pagination, Autoplay } from 'swiper/modules'
+
+// Import CSS
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+import 'swiper/css/autoplay'
+```
+

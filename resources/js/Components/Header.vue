@@ -35,11 +35,11 @@
         <!-- Search + Login (desktop) -->
         <div class="hidden md:flex items-center space-x-4">
           <!-- Search Form -->
-          <form class="relative">
+          <form class="relative w-80">
             <input
               type="text"
               placeholder="Search..."
-              class="border rounded-full px-4 py-2 pr-10 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
+              class="w-full border rounded-full px-4 py-2 pr-10 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
             />
             <button type="submit" class="absolute right-3 top-2.5 text-gray-500 hover:text-yellow-500">
               <i class="fas fa-search"></i>
@@ -48,7 +48,7 @@
 
           <!-- Login Icon -->
           <Link href="/login" class="text-gray-600 hover:text-yellow-500">
-            <i class="fas fa-user-circle text-2xl"></i>
+            <i class="fas fa-user-circle text-5xl"></i>
           </Link>
         </div>
 

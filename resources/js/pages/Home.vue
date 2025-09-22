@@ -46,11 +46,15 @@
       </div>
 
     </div>
+    <LatestNews />
+    <MostPopular /> <!-- Tambahin ini -->
   </AppLayout>
 </template>
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
+import LatestNews from '@/Pages/LatestNews.vue'
+import MostPopular from '@/Pages/MostPopular.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'

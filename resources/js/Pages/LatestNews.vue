@@ -3,7 +3,7 @@
     <!-- Kiri -->
     <div class="lg:col-span-2 space-y-6">
       <!-- Latest News -->
-      <section>
+      <section class="bg-white shadow rounded-lg p-4">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold uppercase">Latest News</h2>
           <a href="#" class="text-sm text-yellow-500 hover:underline">View All</a>
@@ -14,7 +14,7 @@
           <div
             v-for="(news, i) in latestNews"
             :key="i"
-            class="border rounded-lg overflow-hidden shadow-sm"
+            class="border border-gray-300 rounded-lg overflow-hidden shadow-sm"
           >
             <img :src="news.image" class="w-full h-48 object-cover" />
             <div class="p-4">
@@ -33,7 +33,7 @@
           <div
             v-for="(news, i) in listNews"
             :key="i"
-            class="flex items-center space-x-3 border-b pb-3"
+            class="flex items-center space-x-3 border-b border-gray-300 pb-3"
           >
             <img :src="news.image" class="w-24 h-16 object-cover rounded" />
             <div>

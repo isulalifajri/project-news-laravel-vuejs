@@ -1,6 +1,8 @@
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 import '@fortawesome/fontawesome-free/css/all.min.css'
+import { ZiggyVue } from 'ziggy-js'
+import { Ziggy } from './ziggy.js'
 
 
 createInertiaApp({
@@ -11,6 +13,7 @@ createInertiaApp({
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)
+      .use(ZiggyVue, Ziggy)
       .mount(el)
   },
 })

@@ -28,9 +28,12 @@
     <div class="bg-white border-b">
       <div class="max-w-screen-xl mx-auto flex justify-between items-center px-4 py-4">
         <!-- Logo -->
-        <h1 class="text-2xl md:text-3xl font-extrabold">
-          <span class="text-yellow-500">BIZ</span><span class="text-gray-800">NEWS</span>
-        </h1>
+        <Link :href="route('home')">
+          <h1 class="text-2xl md:text-3xl font-extrabold cursor-pointer">
+            <span class="text-yellow-500">BIZ</span>
+            <span class="text-gray-800">NEWS</span>
+          </h1>
+        </Link>
 
         <!-- Search + Login (desktop) -->
         <div class="hidden md:flex items-center space-x-4">
@@ -66,8 +69,8 @@
     <nav class="bg-[#0b132b] hidden md:block">
       <div class="max-w-screen-xl mx-auto px-4">
         <ul class="flex space-x-8 text-white font-medium">
-          <li><Link href="/" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">HOME</Link></li>
-          <li><Link href="/category" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">CATEGORY</Link></li>
+          <li><Link :href="route('home')" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">HOME</Link></li>
+          <li><Link :href="route('category')" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">CATEGORY</Link></li>
           <li><Link href="/single-news" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">SINGLE NEWS</Link></li>
           <li class="relative group">
             <button class="block py-3 px-4 hover:bg-yellow-500 hover:text-black flex items-center">

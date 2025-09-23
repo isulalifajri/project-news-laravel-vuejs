@@ -299,3 +299,30 @@ import 'swiper/css/pagination'
 import 'swiper/css/autoplay'
 ```
 
+Menggunakan router di vue js
+
+install: 
+```
+composer require tightenco/ziggy
+```
+
+di `app.js`:
+
+``
+import { ZiggyVue } from './ziggy'
+import { Ziggy } from './ziggy'
+
+di dalam createIntertiaApp tambahkan ini: .use(ZiggyVue, Ziggy)
+``
+
+geneate ziggi.js dg perintah ini:
+
+```
+php artisan ziggy:generate resources/js/ziggy.js
+```
+
+install juga versi npm nya: 
+```
+npm install ziggy-js
+
+```

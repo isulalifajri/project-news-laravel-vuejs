@@ -49,10 +49,68 @@
             </button>
           </form>
 
-          <!-- Login Icon -->
-          <Link href="/login" class="text-gray-600 hover:text-yellow-500">
-            <i class="fas fa-user-circle text-5xl"></i>
-          </Link>
+           <div class="relative" ref="dropdownRef">
+            <!-- Icon User -->
+            <button
+              @click="userDropdown = !userDropdown"
+              class="text-gray-600 hover:text-yellow-500 focus:outline-none"
+            >
+              <i class="fas fa-user-circle text-5xl"></i>
+            </button>
+
+            <!-- Dropdown Card -->
+            <div
+              v-if="userDropdown"
+              class="absolute right-0 mt-2 w-72 bg-white shadow-lg rounded-lg border border-gray-200 z-50"
+            >
+              <div class="p-4">
+                <!-- 📝 Aktivitas -->
+                <div>
+                  <h4 class="text-gray-400 uppercase text-xs tracking-wide mb-2">Aktivitas</h4>
+                  <Link href="/saved" class="flex items-center px-2 py-2 rounded-lg hover:bg-gray-100 text-gray-700">
+                    <i class="fas fa-bookmark w-5"></i>
+                    <span class="ml-2">Konten yang Disimpan</span>
+                  </Link>
+                  <Link href="/liked" class="flex items-center px-2 py-2 rounded-lg hover:bg-gray-100 text-gray-700">
+                    <i class="fas fa-heart w-5"></i>
+                    <span class="ml-2">Konten yang Disukai</span>
+                  </Link>
+                </div>
+
+                <!-- 👤 Kondisional: login atau user info -->
+                <div class="mt-3 border-t pt-3">
+                  <div v-if="!isLoggedIn">
+                    <Link
+                      href="/login"
+                      class="block w-full text-center bg-yellow-500 text-black py-2 rounded-lg hover:bg-yellow-600 font-semibold"
+                    >
+                      Login
+                    </Link>
+                  </div>
+
+                  <div v-else class="flex items-center gap-3">
+                    <img
+                      src="https://i.pravatar.cc/40?img=12"
+                      alt="User"
+                      class="w-10 h-10 rounded-full border border-gray-600"
+                    />
+                    <div class="flex-1">
+                      <p class="text-sm font-semibold">John Doe</p>
+                      <Link href="/profile" class="text-xs text-gray-400 hover:text-yellow-500">
+                        Lihat Profil
+                      </Link>
+                    </div>
+                    <button
+                      @click="logout"
+                      class="text-sm text-red-400 hover:text-red-500 font-medium"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Mobile menu button -->
@@ -89,34 +147,116 @@
     <!-- Mobile menu -->
     <transition name="fade">
       <div v-if="mobileOpen" class="bg-[#0b132b] md:hidden">
-        <div class="px-4 py-3 space-y-2 text-white font-medium">
-          <Link href="/" class="block hover:text-yellow-400">HOME</Link>
-          <Link href="/category" class="block hover:text-yellow-400">CATEGORY</Link>
-          <Link href="/single-news" class="block hover:text-yellow-400">SINGLE NEWS</Link>
-          <Link href="/contact" class="block hover:text-yellow-400">CONTACT</Link>
+        <div class="px-4 py-3 space-y-5 text-white font-medium">
 
-          <!-- Mobile search -->
-          <form class="mt-3 relative">
+          <!-- 🔍 Search bar (paling atas) -->
+          <form class="relative">
             <input
               type="text"
               placeholder="Search..."
-              class="w-full border rounded-full px-4 py-2 pr-10 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
+              class="w-full border rounded-full px-4 py-2 pr-10 text-white focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
             />
             <button type="submit" class="absolute right-3 top-2.5 text-gray-500 hover:text-yellow-500">
               <i class="fas fa-search"></i>
             </button>
           </form>
+
+          <!-- 📌 Navigasi utama -->
+          <div class="space-y-2">
+            <Link href="/" class="block hover:text-yellow-400">HOME</Link>
+            <Link href="/category" class="block hover:text-yellow-400">CATEGORY</Link>
+            <Link href="/single-news" class="block hover:text-yellow-400">SINGLE NEWS</Link>
+            <Link href="/contact" class="block hover:text-yellow-400">CONTACT</Link>
+          </div>
+
+          <!-- 📝 Aktivitas (di atas login) -->
+          <div class="pt-4 border-t border-gray-700">
+            <h4 class="text-gray-300 uppercase text-xs tracking-wide mb-2">Aktivitas</h4>
+            <div class="space-y-2">
+              <Link href="/saved" class="block hover:text-yellow-400">
+                <i class="fas fa-bookmark mr-2"></i> Konten yang Disimpan
+              </Link>
+              <Link href="/liked" class="block hover:text-yellow-400">
+                <i class="fas fa-heart mr-2"></i> Konten yang Disukai
+              </Link>
+            </div>
+          </div>
+
+          <!-- 👤 Kondisional: login atau user info -->
+          <div class="pt-4 border-t border-gray-700">
+            <!-- Jika belum login -->
+            <div v-if="!isLoggedIn">
+              <Link
+                href="/login"
+                class="block w-full text-center bg-yellow-500 text-black py-2 rounded-lg hover:bg-yellow-600 font-semibold"
+              >
+                Login
+              </Link>
+            </div>
+
+            <!-- Jika sudah login -->
+            <div v-else class="flex items-center gap-3">
+              <!-- Avatar user -->
+              <img
+                src="https://i.pravatar.cc/40?img=12"
+                alt="User"
+                class="w-10 h-10 rounded-full border border-gray-600"
+              />
+              <div class="flex-1">
+                <p class="text-sm font-semibold">John Doe</p>
+                <Link href="/profile" class="text-xs text-gray-400 hover:text-yellow-400">
+                  Lihat Profil
+                </Link>
+              </div>
+              <!-- Logout -->
+              <button
+                @click="logout"
+                class="text-sm text-red-400 hover:text-red-500 font-medium"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
     </transition>
+
   </header>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Link } from '@inertiajs/vue3'
 
 const mobileOpen = ref(false)
+const isLoggedIn = ref(false) // 👉 ganti nanti sesuai state user login
+
+function logout() {
+  isLoggedIn.value = false
+  console.log("User logged out")
+}
+
+const userDropdown = ref(false)
+const dropdownRef = ref(null)
+
+function toggleDropdown() {
+  userDropdown.value = !userDropdown.value
+}
+
+function handleClickOutside(e) {
+  if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
+    userDropdown.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <style>

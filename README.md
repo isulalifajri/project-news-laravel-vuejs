@@ -309,8 +309,8 @@ composer require tightenco/ziggy
 di `app.js`:
 
 ``
-import { ZiggyVue } from './ziggy'
-import { Ziggy } from './ziggy'
+import { ZiggyVue } from 'ziggy-js'
+import { Ziggy } from './ziggy.js'
 
 di dalam createIntertiaApp tambahkan ini: .use(ZiggyVue, Ziggy)
 ``

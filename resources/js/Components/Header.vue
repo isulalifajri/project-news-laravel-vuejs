@@ -69,9 +69,9 @@
     <nav class="bg-[#0b132b] hidden md:block">
       <div class="max-w-screen-xl mx-auto px-4">
         <ul class="flex space-x-8 text-white font-medium">
-          <li><Link :href="route('home')" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">HOME</Link></li>
+          <li><Link :href="route('home')" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">NEWS</Link></li>
           <li><Link :href="route('category')" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">CATEGORY</Link></li>
-          <li><Link href="/single-news" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">SINGLE NEWS</Link></li>
+          <li><Link :href="route('show')" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">SINGLE NEWS</Link></li>
           <li class="relative group">
             <button class="block py-3 px-4 hover:bg-yellow-500 hover:text-black flex items-center">
               DROPDOWN <i class="fas fa-chevron-down ml-2 text-sm"></i>

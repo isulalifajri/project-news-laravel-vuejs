@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <AppLayout :company-profile="props.companyProfile">
     <div class="max-w-screen-xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Kiri (Slider) -->
       <div class="lg:col-span-2">
@@ -16,7 +16,7 @@
             <div class="relative">
               <img :src="slide.image" class="w-full h-[400px] object-cover" />
               <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-6 flex flex-col justify-end">
-                <span class="bg-red-600 text-white text-xs px-2 py-1 rounded mb-2 w-fit">
+                <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded mb-2 w-fit">
                   {{ slide.category }}
                 </span>
                 <h2 class="text-2xl font-bold text-white">{{ slide.title }}</h2>
@@ -64,46 +64,13 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/autoplay'
 
-// const slides = [
-//   {
-//     image: "https://picsum.photos/800/400?random=1",
-//     category: "Business",
-//     title: "Anna Lora Stuns In White At Her Australian Premiere",
-//     author: "Alice Cloe",
-//     date: "Jun 19, 2020",
-//   },
-//   {
-//     image: "https://picsum.photos/800/400?random=2",
-//     category: "World",
-//     title: "Economic Updates Across Asia-Pacific Markets",
-//     author: "John Doe",
-//     date: "Jun 20, 2020",
-//   },
-// ]
-
-// const rightCards = [
-//   {
-//     image: "https://picsum.photos/400/200?random=3",
-//     category: "Fashion",
-//     title: "Secretart for Economic Air plane that looks like",
-//     author: "Alice Cloe",
-//     date: "Jun 19, 2020",
-//   },
-//   {
-//     image: "https://picsum.photos/400/200?random=4",
-//     category: "Tech",
-//     title: "New Gadgets Revolutionize Daily Life",
-//     author: "Alice Cloe",
-//     date: "Jun 20, 2020",
-//   },
-// ]
-
 import { usePage } from '@inertiajs/vue3'
 
 const page = usePage()
 const props = defineProps({
   slides: { type: Array, required: true },
   rightCards: { type: Array, required: true },
+  companyProfile: { type : Object, required: true },
 })
 
 </script>

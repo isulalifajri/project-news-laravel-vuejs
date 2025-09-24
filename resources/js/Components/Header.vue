@@ -5,21 +5,20 @@
       <div class="max-w-screen-xl mx-auto flex justify-between items-center px-4 py-2">
         <!-- Left: date + menu -->
         <div class="flex items-center space-x-4">
-          <span class="text-gray-400 hidden sm:inline">Monday, January 1, 2045</span>
+          <span class="text-gray-400 hidden sm:inline">{{ formattedDate }}</span>
           <nav class="hidden sm:flex space-x-4 border-l border-gray-700 pl-4">
-            <Link href="/advertise" class="hover:text-yellow-400 transition">Advertise</Link>
-            <Link href="/contact" class="hover:text-yellow-400 transition">Contact</Link>
-            <Link href="/login" class="hover:text-yellow-400 transition">Login</Link>
+            <Link href="/contact" class="hover:text-blue-400 transition">Contact</Link>
+            <Link href="/login" class="hover:text-blue-400 transition">Login</Link>
           </nav>
         </div>
 
         <!-- Right: social icons -->
         <div class="flex space-x-4 text-gray-400 text-lg">
-          <a href="#" class="hover:text-yellow-400"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="hover:text-yellow-400"><i class="fab fa-facebook"></i></a>
-          <a href="#" class="hover:text-yellow-400"><i class="fab fa-linkedin"></i></a>
-          <a href="#" class="hover:text-yellow-400"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="hover:text-yellow-400"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="hover:text-blue-400"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="hover:text-blue-400"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="hover:text-blue-400"><i class="fab fa-linkedin"></i></a>
+          <a href="#" class="hover:text-blue-400"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="hover:text-blue-400"><i class="fab fa-youtube"></i></a>
         </div>
       </div>
     </div>
@@ -30,8 +29,8 @@
         <!-- Logo -->
         <Link :href="route('home')">
           <h1 class="text-2xl md:text-3xl font-extrabold cursor-pointer">
-            <span class="text-yellow-500">BIZ</span>
-            <span class="text-gray-800">NEWS</span>
+            <span class="text-blue-500">{{ firstWord }}</span>
+            <span v-if="restWords" class="text-gray-800"> {{ restWords }}</span>
           </h1>
         </Link>
 
@@ -42,9 +41,9 @@
             <input
               type="text"
               placeholder="Search..."
-              class="w-full border rounded-full px-4 py-2 pr-10 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
+              class="w-full border rounded-full px-4 py-2 pr-10 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
             />
-            <button type="submit" class="absolute right-3 top-2.5 text-gray-500 hover:text-yellow-500">
+            <button type="submit" class="absolute right-3 top-2.5 text-gray-500 hover:text-blue-500">
               <i class="fas fa-search"></i>
             </button>
           </form>
@@ -53,7 +52,7 @@
             <!-- Icon User -->
             <button
               @click="userDropdown = !userDropdown"
-              class="text-gray-600 hover:text-yellow-500 focus:outline-none"
+              class="text-gray-600 hover:text-blue-500 focus:outline-none"
             >
               <i class="fas fa-user-circle text-5xl"></i>
             </button>
@@ -82,7 +81,7 @@
                   <div v-if="!isLoggedIn">
                     <Link
                       href="/login"
-                      class="block w-full text-center bg-yellow-500 text-black py-2 rounded-lg hover:bg-yellow-600 font-semibold"
+                      class="block w-full text-center bg-blue-500 text-black py-2 rounded-lg hover:bg-blue-600 font-semibold"
                     >
                       Login
                     </Link>
@@ -96,7 +95,7 @@
                     />
                     <div class="flex-1">
                       <p class="text-sm font-semibold">John Doe</p>
-                      <Link href="/profile" class="text-xs text-gray-400 hover:text-yellow-500">
+                      <Link href="/profile" class="text-xs text-gray-400 hover:text-blue-500">
                         Lihat Profil
                       </Link>
                     </div>
@@ -127,11 +126,11 @@
     <nav class="bg-[#0b132b] hidden md:block">
       <div class="max-w-screen-xl mx-auto px-4">
         <ul class="flex space-x-8 text-white font-medium">
-          <li><Link :href="route('home')" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">NEWS</Link></li>
-          <li><Link :href="route('category')" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">CATEGORY</Link></li>
-          <li><Link :href="route('show')" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">SINGLE NEWS</Link></li>
+          <li><Link :href="route('home')" class="block py-3 px-4 hover:bg-blue-500 hover:text-black">NEWS</Link></li>
+          <li><Link :href="route('category')" class="block py-3 px-4 hover:bg-blue-500 hover:text-black">CATEGORY</Link></li>
+          <li><Link :href="route('show')" class="block py-3 px-4 hover:bg-blue-500 hover:text-black">SINGLE NEWS</Link></li>
           <li class="relative group">
-            <button class="block py-3 px-4 hover:bg-yellow-500 hover:text-black flex items-center">
+            <button class="block py-3 px-4 hover:bg-blue-500 hover:text-black flex items-center">
               DROPDOWN <i class="fas fa-chevron-down ml-2 text-sm"></i>
             </button>
             <ul class="absolute left-0 hidden group-hover:block bg-white shadow-md text-gray-800 min-w-[150px]">
@@ -139,7 +138,7 @@
               <li><Link href="/submenu2" class="block px-4 py-2 hover:bg-gray-100">Submenu 2</Link></li>
             </ul>
           </li>
-          <li><Link href="/contact" class="block py-3 px-4 hover:bg-yellow-500 hover:text-black">CONTACT</Link></li>
+          <li><Link href="/contact" class="block py-3 px-4 hover:bg-blue-500 hover:text-black">CONTACT</Link></li>
         </ul>
       </div>
     </nav>
@@ -154,29 +153,29 @@
             <input
               type="text"
               placeholder="Search..."
-              class="w-full border rounded-full px-4 py-2 pr-10 text-white focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400"
+              class="w-full border rounded-full px-4 py-2 pr-10 text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
             />
-            <button type="submit" class="absolute right-3 top-2.5 text-gray-500 hover:text-yellow-500">
+            <button type="submit" class="absolute right-3 top-2.5 text-gray-500 hover:text-blue-500">
               <i class="fas fa-search"></i>
             </button>
           </form>
 
           <!-- 📌 Navigasi utama -->
           <div class="space-y-2">
-            <Link href="/" class="block hover:text-yellow-400">HOME</Link>
-            <Link href="/category" class="block hover:text-yellow-400">CATEGORY</Link>
-            <Link href="/single-news" class="block hover:text-yellow-400">SINGLE NEWS</Link>
-            <Link href="/contact" class="block hover:text-yellow-400">CONTACT</Link>
+            <Link href="/" class="block hover:text-blue-400">HOME</Link>
+            <Link href="/category" class="block hover:text-blue-400">CATEGORY</Link>
+            <Link href="/single-news" class="block hover:text-blue-400">SINGLE NEWS</Link>
+            <Link href="/contact" class="block hover:text-blue-400">CONTACT</Link>
           </div>
 
           <!-- 📝 Aktivitas (di atas login) -->
           <div class="pt-4 border-t border-gray-700">
             <h4 class="text-gray-300 uppercase text-xs tracking-wide mb-2">Aktivitas</h4>
             <div class="space-y-2">
-              <Link href="/saved" class="block hover:text-yellow-400">
+              <Link href="/saved" class="block hover:text-blue-400">
                 <i class="fas fa-bookmark mr-2"></i> Konten yang Disimpan
               </Link>
-              <Link href="/liked" class="block hover:text-yellow-400">
+              <Link href="/liked" class="block hover:text-blue-400">
                 <i class="fas fa-heart mr-2"></i> Konten yang Disukai
               </Link>
             </div>
@@ -188,7 +187,7 @@
             <div v-if="!isLoggedIn">
               <Link
                 href="/login"
-                class="block w-full text-center bg-yellow-500 text-black py-2 rounded-lg hover:bg-yellow-600 font-semibold"
+                class="block w-full text-center bg-blue-500 text-black py-2 rounded-lg hover:bg-blue-600 font-semibold"
               >
                 Login
               </Link>
@@ -204,7 +203,7 @@
               />
               <div class="flex-1">
                 <p class="text-sm font-semibold">John Doe</p>
-                <Link href="/profile" class="text-xs text-gray-400 hover:text-yellow-400">
+                <Link href="/profile" class="text-xs text-gray-400 hover:text-blue-400">
                   Lihat Profil
                 </Link>
               </div>
@@ -226,11 +225,33 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { Link } from '@inertiajs/vue3'
 
+const props = defineProps({
+  companyProfile: { type: Object, required: true }
+})
+
+const nameWords = computed(() => (props.companyProfile?.name || '').split(' '))
+const firstWord = computed(() => nameWords.value[0])
+const restWords = computed(() => nameWords.value.slice(1).join(' '))
+
+
+const today = ref(new Date())
+
+const formattedDate = computed(() => {
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+  return today.value.toLocaleDateString('en-US', options)
+})
+
+function handleClickOutside(e) {
+  if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
+    userDropdown.value = false
+  }
+}
+
 const mobileOpen = ref(false)
-const isLoggedIn = ref(false) // 👉 ganti nanti sesuai state user login
+const isLoggedIn = ref(false)
 
 function logout() {
   isLoggedIn.value = false
@@ -242,12 +263,6 @@ const dropdownRef = ref(null)
 
 function toggleDropdown() {
   userDropdown.value = !userDropdown.value
-}
-
-function handleClickOutside(e) {
-  if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
-    userDropdown.value = false
-  }
 }
 
 onMounted(() => {

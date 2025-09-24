@@ -5,12 +5,29 @@ namespace App\Http\Controllers\FE;
 use App\Models\Post;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Models\FooterContact;
+use App\Models\CompanyProfile;
 use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        // Ambil data Company Profile (anggap cuma satu row)
+        $companyProfile = CompanyProfile::first();
+
+        if (!$companyProfile) {
+            $companyProfile = new CompanyProfile([
+                'name' => 'SKY NEWS',
+                'about' => '',
+                'logo' => 'https://picsum.photos/800/400?random=logo',
+            ]);
+        }
+
+        // Ambil data Footer yang aktif
+        $footerContacts = FooterContact::where('is_active', true)->get();
+
+        
         $slides = Post::where('status', 'published')
             ->inRandomOrder()        // 👈 biar acak setiap refresh
             ->take(5)
@@ -77,6 +94,8 @@ class HomeController extends Controller
             'latest'       => $latest,
             'slides'       => $slides,
             'rightCards'   => $rightCards,
+            'companyProfile' => $companyProfile,
+            'footerContacts' => $footerContacts,
         ]);
     }
 }

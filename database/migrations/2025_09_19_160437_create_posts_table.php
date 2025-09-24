@@ -21,6 +21,8 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // author
+            $table->unsignedBigInteger('views')->default(0);
+            $table->boolean('is_featured')->default(false);
             $table->timestamps();
         });
     }

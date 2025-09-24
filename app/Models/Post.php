@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
+    use HasFactory;
      protected $fillable = [
         'title', 'slug', 'content', 'thumbnail',
-        'status', 'published_at', 'category_id', 'user_id'
+        'status', 'published_at', 'category_id', 'user_id','views','is_featured'
      ];
 
      public function category()

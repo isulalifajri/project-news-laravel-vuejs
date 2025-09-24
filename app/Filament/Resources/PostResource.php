@@ -88,7 +88,7 @@ class PostResource extends Resource
                                 'published' => 'Published',
                                 'archived' => 'Archived',
                             ])
-                            ->default('draft'),
+                            ->default('published'),
 
                         Forms\Components\DateTimePicker::make('published_at')->default(now()),
                     ]),
@@ -100,6 +100,19 @@ class PostResource extends Resource
                             ->multiple()
                             ->relationship('tags', 'name')
                             ->preload(),
+                    ]),
+
+                Forms\Components\Section::make('Pengaturan Tambahan')
+                    ->schema([
+                        Forms\Components\Toggle::make('is_featured')
+                            ->label('Tampilkan di Trending / Featured')
+                            ->default(false),
+
+                        Forms\Components\TextInput::make('views')
+                            ->label('Jumlah View')
+                            ->numeric()
+                            ->default(0)
+                            ->disabled(),
                     ]),
             ]);
     }
@@ -114,6 +127,12 @@ class PostResource extends Resource
                 Tables\Columns\TextColumn::make('backendUser.name')->label('Author'),
                 Tables\Columns\TextColumn::make('status')->badge(),
                 Tables\Columns\TextColumn::make('published_at')->dateTime(),
+                Tables\Columns\IconColumn::make('is_featured')
+                    ->label('Featured')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('views')
+                    ->label('Views')
+                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')->options([

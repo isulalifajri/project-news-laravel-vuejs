@@ -2,10 +2,12 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FE\HomeController;
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-})->name('home');
+// Route::get('/', function () {
+//     return Inertia::render('Home');
+// })->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/category', function () {
     return Inertia::render('Categories/index');

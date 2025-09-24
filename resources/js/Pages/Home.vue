@@ -44,7 +44,6 @@
           </div>
         </div>
       </div>
-
     </div>
     <LatestNews />
     <MostPopular /> <!-- Tambahin ini -->
@@ -65,37 +64,46 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/autoplay'
 
-const slides = [
-  {
-    image: "https://picsum.photos/800/400?random=1",
-    category: "Business",
-    title: "Anna Lora Stuns In White At Her Australian Premiere",
-    author: "Alice Cloe",
-    date: "Jun 19, 2020",
-  },
-  {
-    image: "https://picsum.photos/800/400?random=2",
-    category: "World",
-    title: "Economic Updates Across Asia-Pacific Markets",
-    author: "John Doe",
-    date: "Jun 20, 2020",
-  },
-]
+// const slides = [
+//   {
+//     image: "https://picsum.photos/800/400?random=1",
+//     category: "Business",
+//     title: "Anna Lora Stuns In White At Her Australian Premiere",
+//     author: "Alice Cloe",
+//     date: "Jun 19, 2020",
+//   },
+//   {
+//     image: "https://picsum.photos/800/400?random=2",
+//     category: "World",
+//     title: "Economic Updates Across Asia-Pacific Markets",
+//     author: "John Doe",
+//     date: "Jun 20, 2020",
+//   },
+// ]
 
-const rightCards = [
-  {
-    image: "https://picsum.photos/400/200?random=3",
-    category: "Fashion",
-    title: "Secretart for Economic Air plane that looks like",
-    author: "Alice Cloe",
-    date: "Jun 19, 2020",
-  },
-  {
-    image: "https://picsum.photos/400/200?random=4",
-    category: "Tech",
-    title: "New Gadgets Revolutionize Daily Life",
-    author: "Alice Cloe",
-    date: "Jun 20, 2020",
-  },
-]
+// const rightCards = [
+//   {
+//     image: "https://picsum.photos/400/200?random=3",
+//     category: "Fashion",
+//     title: "Secretart for Economic Air plane that looks like",
+//     author: "Alice Cloe",
+//     date: "Jun 19, 2020",
+//   },
+//   {
+//     image: "https://picsum.photos/400/200?random=4",
+//     category: "Tech",
+//     title: "New Gadgets Revolutionize Daily Life",
+//     author: "Alice Cloe",
+//     date: "Jun 20, 2020",
+//   },
+// ]
+
+import { usePage } from '@inertiajs/vue3'
+
+const page = usePage()
+const props = defineProps({
+  slides: { type: Array, required: true },
+  rightCards: { type: Array, required: true },
+})
+
 </script>

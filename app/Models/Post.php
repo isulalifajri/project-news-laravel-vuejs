@@ -8,28 +8,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Post extends Model
 {
     use HasFactory;
-     protected $fillable = [
-        'title', 'slug', 'content', 'thumbnail',
-        'status', 'published_at', 'category_id', 'user_id','views','is_featured'
-     ];
 
-     public function category()
-     {
-         return $this->belongsTo(Category::class);
-     }
+    protected $fillable = [
+    'title', 'slug', 'content', 'thumbnail',
+    'status', 'published_at', 'category_id', 'user_id','views','is_featured'
+    ];
 
-     public function backendUser()
-     {
-         return $this->belongsTo(BackendUser::class, 'user_id');
-     }
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
 
-     public function comments()
-     {
-         return $this->hasMany(Comment::class);
-     }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
-     public function tags()
-     {
-         return $this->belongsToMany(Tag::class);
-     }
+    public function backendUser()
+    {
+        return $this->belongsTo(BackendUser::class, 'user_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 }

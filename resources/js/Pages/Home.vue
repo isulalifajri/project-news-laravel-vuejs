@@ -1,7 +1,9 @@
 <template>
   <AppLayout 
   :company-profile="props.companyProfile"
-  :footer-contacts="props.footerContacts" >
+  :sosmed-icons="props.sosmedIcons"
+  :footer-contacts="props.footerContacts"
+   >
     <div class="max-w-screen-xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Kiri (Slider) -->
       <div class="lg:col-span-2">
@@ -73,6 +75,7 @@ const props = defineProps({
   slides: { type: Array, required: true },
   rightCards: { type: Array, required: true },
   companyProfile: { type : Object, required: true },
+  sosmedIcons: { type: Array, default: () => [] },
   footerContacts: { type: Array, default: () => [] },
 })
 

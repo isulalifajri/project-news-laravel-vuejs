@@ -14,9 +14,9 @@
 
         <!-- Right: social icons -->
         <div class="flex space-x-4 text-gray-400 text-lg">
-          <template v-if="props.footerContacts && props.footerContacts.length > 0">
+          <template v-if="props.sosmedIcons && props.sosmedIcons.length > 0">
           <a 
-            v-for="(item, i) in props.footerContacts" 
+            v-for="(item, i) in props.sosmedIcons" 
             :key="i" 
             :href="item.value || '#'" 
             class="hover:text-blue-400"
@@ -25,7 +25,7 @@
           ></a>
         </template>
 
-        <!-- Fallback default kalau footerContacts kosong -->
+        <!-- Fallback default kalau sosmedIcons kosong -->
         <template v-else>
           <a href="#" class="hover:text-blue-400"><i class="fab fa-twitter"></i></a>
           <a href="#" class="hover:text-blue-400"><i class="fab fa-facebook"></i></a>
@@ -43,8 +43,8 @@
         <!-- Logo -->
         <Link :href="route('home')">
           <h1 class="text-2xl md:text-3xl font-extrabold cursor-pointer">
-            <span class="text-blue-500">{{ firstWord }}</span>
-            <span v-if="restWords" class="text-gray-800"> {{ restWords }}</span>
+            <span class="text-blue-500 uppercase">{{ firstWord }}</span>
+            <span v-if="restWords" class="text-gray-800 uppercase"> {{ restWords }}</span>
           </h1>
         </Link>
 
@@ -244,7 +244,7 @@ import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
   companyProfile: { type: Object, required: true },
-  footerContacts: { type: Array, default: () => [] }
+  sosmedIcons: { type: Array, default: () => [] }
 })
 
 const nameWords = computed(() => (props.companyProfile?.name || '').split(' '))

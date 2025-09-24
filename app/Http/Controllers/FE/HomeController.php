@@ -25,8 +25,11 @@ class HomeController extends Controller
         }
 
         // Ambil data Footer yang aktif
-        $footerContacts = FooterContact::where('is_active', true)->get();
+        $footerContacts = FooterContact::where('is_active', true)
+        ->whereNull('icon')->get();
 
+        $sosmedIcons = FooterContact::where('is_active', true)
+        ->whereNotNull('icon')->get();
 
         $slides = Post::where('status', 'published')
             ->inRandomOrder()        // 👈 biar acak setiap refresh
@@ -96,6 +99,7 @@ class HomeController extends Controller
             'rightCards'   => $rightCards,
             'companyProfile' => $companyProfile,
             'footerContacts' => $footerContacts,
+            'sosmedIcons' => $sosmedIcons,
         ]);
     }
 }

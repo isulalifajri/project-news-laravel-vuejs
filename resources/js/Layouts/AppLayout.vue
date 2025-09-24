@@ -3,7 +3,8 @@
     <!-- Header -->
     <Header 
     :company-profile="companyProfile" 
-    :footer-contacts="footerContacts"  
+    :sosmed-icons="sosmedIcons"  
+    :footer-contatcs="sosmedIcons"  
     />
 
     <!-- Main Content -->
@@ -12,7 +13,9 @@
     </main>
 
     <!-- Footer -->
-    <Footer />
+    <Footer
+    :sosmed-icons="sosmedIcons"
+    :footer-contacts="props.footerContacts"  />
   </div>
 </template>
 
@@ -22,6 +25,7 @@ import Footer from '@/components/Footer.vue'
 
 const props = defineProps({
   companyProfile: { type: Object, required: true },
+  sosmedIcons: { type: Array, default: () => [] },
   footerContacts: { type: Array, default: () => [] },
 })
 </script>

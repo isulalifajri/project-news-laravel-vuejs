@@ -23,14 +23,14 @@ class FooterContactResource extends Resource
 
     public static function form(Form $form): Form
     {
-        // 👇 cek apakah sedang edit atau create
         if ($form->getOperation() === 'edit') {
             return $form->schema([
                 Forms\Components\TextInput::make('label')
-                    ->label('Label'),
+                    ->label('Label')
+                    ->readOnly(),
 
                 Forms\Components\TextInput::make('value')
-                    ->label('Isi Konten')
+                    ->label(fn ($record) => $record?->type ?? 'Fill Content')
                     ->required(),
 
                 Forms\Components\TextInput::make('icon')
@@ -46,26 +46,36 @@ class FooterContactResource extends Resource
             ]);
         }
 
-        // 👉 kalau CREATE
-        return $form->schema([
-            Forms\Components\TextInput::make('label')
-                ->label('Label (misal: GET IN TOUCH)')
+        // 👉 CREATE
+        $hasContacts = FooterContact::whereIn('type', ['address', 'phone', 'email'])->exists();
+
+        $schema = [];
+
+        // Hanya tampilkan field kontak kalau belum ada
+        if (! $hasContacts) {
+            $schema[] = Forms\Components\TextInput::make('label')
+                ->label('Label')
                 ->default('GET IN TOUCH')
-                ->readOnly(),
+                ->readOnly();
 
-            Forms\Components\TextInput::make('address')
+            $schema[] = Forms\Components\TextInput::make('address')
                 ->label('Alamat')
-                ->placeholder('123 Street, New York, USA'),
+                ->placeholder('123 Street, New York, USA')
+                ->required();
 
-            Forms\Components\TextInput::make('phone')
+            $schema[] = Forms\Components\TextInput::make('phone')
                 ->label('Nomor Telepon')
-                ->placeholder('+012 345 67890'),
+                ->placeholder('+012 345 67890')
+                ->required();
 
-            Forms\Components\TextInput::make('email')
+            $schema[] = Forms\Components\TextInput::make('email')
                 ->label('Email')
-                ->placeholder('info@example.com'),
+                ->placeholder('info@example.com')
+                ->required();
+        }
 
-            Forms\Components\Repeater::make('socials')
+        // Repeater social media selalu ditampilkan
+        $schema[] = Forms\Components\Repeater::make('socials')
             ->label('Social Media')
             ->schema([
                 Forms\Components\TextInput::make('link')
@@ -77,17 +87,21 @@ class FooterContactResource extends Resource
                     ->placeholder('twitter / facebook / instagram / linkedin / tiktok')
                     ->helperText(new \Illuminate\Support\HtmlString(
                         'Example: <code>&lt;i class="fab fa-tiktok"&gt;&lt;/i&gt;</code><br>
-                        Find more icons at <a href="https://fontawesome.com/icons" target="_blank" class="text-primary-600 underline">Font Awesome</a>'
+                        Find more icons at <a href="https://fontawesome.com/icons" target="_blank" 
+                        class="text-primary-600 underline">Font Awesome</a>'
                     )),
             ])
             ->createItemButtonLabel('Add Social Media')
-            ->columns(1),
+            ->columns(1);
 
-            Forms\Components\Toggle::make('is_active')
-                ->label('Aktifkan?')
-                ->default(true),
-        ]);
+        // Toggle aktif
+        $schema[] = Forms\Components\Toggle::make('is_active')
+            ->label('Aktifkan?')
+            ->default(true);
+
+        return $form->schema($schema);
     }
+
 
     public static function table(Table $table): Table
     {

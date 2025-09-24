@@ -18,4 +18,3 @@ Route::get('/show', function () {
         'errors' => (object)[], // kasih props kosong biar inertia gak error
     ]);
 })->name('show');
-

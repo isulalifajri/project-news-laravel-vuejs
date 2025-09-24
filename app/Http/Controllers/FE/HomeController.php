@@ -27,7 +27,7 @@ class HomeController extends Controller
         // Ambil data Footer yang aktif
         $footerContacts = FooterContact::where('is_active', true)->get();
 
-        
+
         $slides = Post::where('status', 'published')
             ->inRandomOrder()        // 👈 biar acak setiap refresh
             ->take(5)

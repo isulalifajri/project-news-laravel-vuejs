@@ -47,13 +47,16 @@ class CreateFooterContact extends CreateRecord
 
         if (!empty($data['socials']) && is_array($data['socials'])) {
             foreach ($data['socials'] as $social) {
-                $items[] = [
-                    'label'     => 'FOLLOW US',
-                    'type'      => 'social',
-                    'value'     => $social['link'] ?? null,
-                    'icon'      => $social['icon'] ?? null,
-                    'is_active' => $isActive,
-                ];
+                // hanya tambah kalau link ada
+                if (!empty($social['link'])) {
+                    $items[] = [
+                        'label'     => 'FOLLOW US',
+                        'type'      => 'social',
+                        'value'     => $social['link'],
+                        'icon'      => $social['icon'] ?? null,
+                        'is_active' => $isActive,
+                    ];
+                }
             }
         }
 
@@ -77,5 +80,4 @@ class CreateFooterContact extends CreateRecord
         // setelah create langsung balik ke index
         return static::getResource()::getUrl('index');
     }
-
 }

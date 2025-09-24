@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type'); // address / phone / email / social
             $table->string('label')->nullable(); // GET IN TOUCH / FOLLOW US
-            $table->string('value'); // isi kontak / url sosial
+            $table->string('value')->nullable(); // isi kontak / url sosial
             $table->string('icon')->nullable(); // nama icon social (twitter, instagram)
             $table->boolean('is_active')->default(true);
             $table->timestamps();

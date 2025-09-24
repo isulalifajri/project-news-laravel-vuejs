@@ -13,9 +13,9 @@ class ListFooterContacts extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        if (FooterContact::count() > 0) {
-            return [];
-        }
+        // if (FooterContact::count() > 0) {
+        //     return [];
+        // }
         return [
             Actions\CreateAction::make(),
         ];

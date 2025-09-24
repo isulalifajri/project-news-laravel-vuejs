@@ -14,11 +14,25 @@
 
         <!-- Right: social icons -->
         <div class="flex space-x-4 text-gray-400 text-lg">
+          <template v-if="props.footerContacts && props.footerContacts.length > 0">
+          <a 
+            v-for="(item, i) in props.footerContacts" 
+            :key="i" 
+            :href="item.value || '#'" 
+            class="hover:text-blue-400"
+            target="_blank"
+            v-html="item.icon"
+          ></a>
+        </template>
+
+        <!-- Fallback default kalau footerContacts kosong -->
+        <template v-else>
           <a href="#" class="hover:text-blue-400"><i class="fab fa-twitter"></i></a>
           <a href="#" class="hover:text-blue-400"><i class="fab fa-facebook"></i></a>
           <a href="#" class="hover:text-blue-400"><i class="fab fa-linkedin"></i></a>
           <a href="#" class="hover:text-blue-400"><i class="fab fa-instagram"></i></a>
           <a href="#" class="hover:text-blue-400"><i class="fab fa-youtube"></i></a>
+        </template>
         </div>
       </div>
     </div>
@@ -229,7 +243,8 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
-  companyProfile: { type: Object, required: true }
+  companyProfile: { type: Object, required: true },
+  footerContacts: { type: Array, default: () => [] }
 })
 
 const nameWords = computed(() => (props.companyProfile?.name || '').split(' '))

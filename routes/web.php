@@ -13,6 +13,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/category/{slug}', [CategoryController::class, 'show'])
     ->name('category.show');
 
+Route::get('/category/{slug}/posts', [CategoryController::class, 'posts'])
+    ->name('category.posts');
+
 Route::get('/show', function () {
     return Inertia::render('Posts/show', [
         'errors' => (object)[], // kasih props kosong biar inertia gak error

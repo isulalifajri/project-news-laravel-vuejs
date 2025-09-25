@@ -110,4 +110,28 @@ class CategoryController extends Controller
             'sosmedIcons' => $sosmedIcons,
         ]);
     }
+
+    public function posts($slug)
+    {
+        $posts = Post::where('status', 'published')
+            ->whereHas('category', fn($q) => $q->where('slug', $slug))
+            ->latest('published_at')
+            ->with(['category', 'backendUser'])
+            ->paginate(6)
+            ->through(fn($post) => [
+                'id' => $post->id,
+                'image' => $post->thumbnail 
+                    ? asset('storage/' . $post->thumbnail) 
+                    : "https://picsum.photos/800/400?random=" . rand(1,1000),
+                'category' => $post->category?->name ?? 'GENERAL',
+                'title' => $post->title,
+                'author' => $post->backendUser?->name ?? 'Unknown',
+                'date' => $post->published_at?->format('M d, Y'),
+                'slug' => $post->slug,
+            ]);
+
+        return response()->json($posts); // JSON paginator
+    }
+
+
 }

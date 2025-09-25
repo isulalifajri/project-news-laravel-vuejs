@@ -11,8 +11,7 @@
         <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
           {{ news.category }}
         </span>
-        <h3 class="mt-2 font-semibold text-lg">{{ news.title }}</h3>
-        <p class="text-sm text-gray-600 mt-1">{{ news.description }}</p>
+        <h3 class="mt-2 font-semibold text-lg line-clamp-2">{{ news.title }}</h3>
         <p class="text-xs text-gray-400 mt-2">
           By {{ news.author }} • {{ news.date }}
         </p>
@@ -30,7 +29,6 @@ const props = defineProps({
         image: "https://picsum.photos/400/300?random=1",
         category: "Business",
         title: "Strategi Bisnis 2025",
-        description: "Mengenal tren bisnis terbaru di tahun 2025.",
         author: "Admin",
         date: "Sep 20, 2025",
       },
@@ -38,7 +36,6 @@ const props = defineProps({
         image: "https://picsum.photos/400/300?random=2",
         category: "Tech",
         title: "AI Mengubah Dunia",
-        description: "Teknologi AI terus memengaruhi kehidupan sehari-hari.",
         author: "John",
         date: "Sep 19, 2025",
       },
@@ -46,7 +43,6 @@ const props = defineProps({
         image: "https://picsum.photos/400/300?random=3",
         category: "Travel",
         title: "Wisata Populer 2025",
-        description: "Destinasi paling dicari wisatawan tahun ini.",
         author: "Jane",
         date: "Sep 18, 2025",
       },

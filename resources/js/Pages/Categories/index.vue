@@ -14,6 +14,25 @@
       </div>
     </div>
 
+   <!-- Scrollable Categories (Horizontal) -->
+  <div class="bg-white/10 backdrop-blur-sm rounded max-w min-w-0 overflow-x-auto">
+    <div class="overflow-x-auto flex space-x-3 px-4 py-2">
+      <a
+        v-for="(cat, i) in categories"
+        :key="i"
+        :href="`/category/${cat.slug}`"
+        class="flex-shrink-0 bg-[#0b132b] text-gray-300 font-semibold 
+              px-2 py-1 text-xs    <!-- default (mobile) kecil -->
+              sm:px-3 sm:py-1.5 sm:text-sm   <!-- layar ≥640px -->
+              md:px-4 md:py-2 md:text-base   <!-- layar ≥768px -->
+              rounded-full shadow-md 
+              hover:bg-blue-500 hover:text-white transition duration-300"
+      >
+        {{ cat.name }}
+      </a>
+    </div>
+  </div>
+
     <!-- Category News -->
     <div class="max-w-screen-xl mx-auto px-4">
       <section>
@@ -45,4 +64,14 @@
   import AppLayout from '@/Layouts/AppLayout.vue'
   import LatestNews from '@/Pages/LatestNews.vue'
   import News from '@/Pages/News.vue'
+
+  const categories = [
+  { name: "Business", slug: "business" },
+  { name: "Technology", slug: "technology" },
+  { name: "World", slug: "world" },
+  { name: "Sports", slug: "sports" },
+  { name: "Health", slug: "health" },
+  { name: "Entertainment", slug: "entertainment" },
+  { name: "Politics", slug: "politics" },
+]
 </script>

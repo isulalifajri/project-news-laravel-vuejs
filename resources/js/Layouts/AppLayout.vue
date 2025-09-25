@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col min-h-screen">
+  <div class="min-h-screen">
     <!-- Header -->
     <Header 
     :company-profile="companyProfile" 

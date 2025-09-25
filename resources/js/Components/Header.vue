@@ -18,7 +18,7 @@
           <a 
             v-for="(item, i) in props.sosmedIcons" 
             :key="i" 
-            :href="item.value || '#'" 
+            :href="item.value ? (item.value.startsWith('http') ? item.value : `https://${item.value}`) : '#'"
             class="hover:text-blue-400"
             target="_blank"
             v-html="item.icon"

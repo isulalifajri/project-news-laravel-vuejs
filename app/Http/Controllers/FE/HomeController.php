@@ -35,7 +35,7 @@ class HomeController extends Controller
         ->whereNotNull('icon')->get();
 
         $slides = Post::where('status', 'published')
-            ->inRandomOrder()        // 👈 biar acak setiap refresh
+            ->inRandomOrder()
             ->take(5)
             ->with(['category', 'backendUser'])
             ->get()
@@ -55,9 +55,10 @@ class HomeController extends Controller
         // --- Right Cards (2 post populer/random kalau tidak ada views) ---
         $rightCards = Post::where('status', 'published')
             ->orderByDesc('views')    // pakai views kalau ada
-            ->take(2)
+            ->take(5)
             ->with(['category', 'backendUser'])
             ->get()
+            ->shuffle()
             ->map(function ($post) {
                 return [
                     'image'    => $post->thumbnail
@@ -91,15 +92,29 @@ class HomeController extends Controller
             ->shuffle();
 
         // Latest Posts (berdasarkan tanggal publish terbaru)
-        $latest = Post::where('status', 'published')
+        $latestNews = Post::where('status', 'published')
             ->latest('published_at')
-            ->take(6)
-            ->get();
+            ->with(['category', 'backendUser'])
+            ->take(10)
+            ->get()
+            ->shuffle()
+            ->map(function ($post) {
+                return [
+                    'image'    => $post->thumbnail
+                                    ? asset('storage/' . $post->thumbnail)
+                                    : "https://picsum.photos/800/400?random=" . rand(1, 1000),
+                    'category' => $post->category?->name ?? 'GENERAL',
+                    'title'    => $post->title,
+                    'author'   => $post->backendUser?->name ?? 'Unknown',
+                    'date'     => $post->published_at?->format('M d, Y'),
+                    'slug'     => $post->slug,
+                ];
+            });
 
         return Inertia::render('Home', [
             'trendings'     => $trendings,
             'mostPopulars'  => $mostPopulars,
-            'latest'       => $latest,
+            'latestNews'       => $latestNews,
             'slides'       => $slides,
             'rightCards'   => $rightCards,
             'companyProfile' => $companyProfile,

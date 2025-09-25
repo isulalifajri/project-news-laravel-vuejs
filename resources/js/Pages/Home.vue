@@ -38,11 +38,11 @@
       <!-- Kanan (2 card statis) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
         <div
-          v-for="(card, i) in rightCards"
+          v-for="(card, i) in rightCards.slice(0, 2)"
           :key="i"
           class="relative rounded-lg overflow-hidden"
         >
-        <a href="#">
+        <a :href="`/news/${card.slug}`">
           <img :src="card.image" class="w-full h-[190px] object-cover" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-4 flex flex-col justify-end">
             <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded mb-2 w-fit">
@@ -55,7 +55,7 @@
         </div>
       </div>
     </div>
-    <LatestNews />
+    <LatestNews :latest-News="props.latestNews" />
     <MostPopular /> <!-- Tambahin ini -->
   </AppLayout>
 </template>
@@ -85,6 +85,7 @@ const props = defineProps({
   footerContacts: { type: Array, default: () => [] },
   categories: { type: Array, default: () => [] },
   mostPopulars: { type: Array, default: () => [] },
+  latestNews: { type: Array, default: () => [] },
 })
 
 </script>

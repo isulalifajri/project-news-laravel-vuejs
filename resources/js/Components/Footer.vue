@@ -47,10 +47,24 @@
       <!-- Popular News -->
       <div>
         <h3 class="text-lg font-bold mb-4">POPULAR NEWS</h3>
-        <div v-for="i in 3" :key="i" class="mb-4">
-          <span class="bg-blue-500 text-black text-xs font-bold px-2 py-1">BUSINESS</span>
-          <span class="text-sm ml-2">Jan 01, 2045</span>
-          <p class="mt-2 text-sm">LOREM IPSUM DOLOR SIT AMET ELIT. PROIN VITAE PORTA DIAM...</p>
+        <div v-if="props.mostPopulars && props.mostPopulars.length">
+          <div v-for="(post, i) in props.mostPopulars.slice(0, 3)" :key="i" class="mb-4">
+            <span class="bg-blue-500 text-black text-xs font-bold px-2 py-1">
+              {{ post.category?.name ?? 'GENERAL' }}
+            </span>
+            <span class="text-sm ml-2">
+              {{ new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) }}
+            </span>
+            <p class="mt-2 text-sm uppercase line-clamp-2">{{ post.title }}</p>
+          </div>
+        </div>
+      
+        <div v-else>
+          <div v-for="i in 3" :key="i" class="mb-4">
+            <span class="bg-blue-500 text-black text-xs font-bold px-2 py-1">BUSINESS</span>
+            <span class="text-sm ml-2">Jan 01, 2045</span>
+            <p class="mt-2 text-sm">LOREM IPSUM DOLOR SIT AMET ELIT. PROIN VITAE PORTA DIAM...</p>
+          </div>
         </div>
       </div>
 
@@ -58,10 +72,15 @@
       <div>
         <h3 class="text-lg font-bold mb-4">CATEGORIES</h3>
         <div class="flex flex-wrap gap-2">
-          <span v-for="(cat, i) in categories" :key="i" 
-            class="bg-gray-700 px-3 py-1 text-sm rounded cursor-pointer hover:bg-blue-500 hover:text-black">
-            {{ cat }}
-          </span>
+          <template v-if="props.categories && props.categories.length > 0">
+            <span v-for="(cat, i) in props.categories" :key="i" 
+              class="bg-gray-700 px-3 py-1 text-sm rounded cursor-pointer hover:bg-blue-500 hover:text-black">
+              <a :href="`/category/${cat.slug}`">{{ cat.name }}</a>
+            </span>
+          </template>
+          <template v-else>
+            <span class="bg-gray-500 px-3 py-1 text-sm rounded text-gray-200">No categories found</span>
+          </template>
         </div>
       </div>
 
@@ -69,7 +88,13 @@
       <div>
         <h3 class="text-lg font-bold mb-4">FLICKR PHOTOS</h3>
         <div class="grid grid-cols-3 gap-2">
-          <img v-for="i in 6" :key="i" src="https://picsum.photos/100?random={{ i }}" alt="photo" class="w-full h-20 object-cover rounded" />
+           <img 
+            v-for="i in 6" 
+            :key="i" 
+            :src="`https://picsum.photos/100?random=${i}`" 
+            alt="photo" 
+            class="w-full h-20 object-cover rounded" 
+          />
         </div>
       </div>
     </div>
@@ -88,6 +113,8 @@ import { ref, computed } from 'vue'
 const props = defineProps({
   sosmedIcons: { type: Array, default: () => [] },
   footerContacts: { type: Array, default: () => [] },
+  categories: { type: Array, default: () => [] },
+  mostPopulars: { type: Array, default: () => [] },
 })
 
 const address = computed(() => props.footerContacts.find(item => item.type === 'address')?.value || '123 Street, New York, USA')
@@ -95,8 +122,4 @@ const phone   = computed(() => props.footerContacts.find(item => item.type === '
 const email   = computed(() => props.footerContacts.find(item => item.type === 'email')?.value || 'info@example.com')
 
 const currentYear = ref(new Date().getFullYear())
-const categories = [
-  "Politics","Business","Corporate","Health","Education","Science",
-  "Foods","Entertainment","Travel","Lifestyle"
-]
 </script>

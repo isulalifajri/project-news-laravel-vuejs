@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\FooterContact;
 use App\Models\CompanyProfile;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 
 class HomeController extends Controller
 {
@@ -27,6 +28,8 @@ class HomeController extends Controller
         // Ambil data Footer yang aktif
         $footerContacts = FooterContact::where('is_active', true)
         ->whereNull('icon')->get();
+
+        $categories = Category::all();
 
         $sosmedIcons = FooterContact::where('is_active', true)
         ->whereNotNull('icon')->get();
@@ -69,7 +72,7 @@ class HomeController extends Controller
             });
 
         // Trending News (ditandai is_featured)
-        $trending = Post::where('status', 'published')
+        $trendings = Post::where('status', 'published')
             ->where(function ($query) {
                 $query->where('is_featured', true)
                     ->orWhere('published_at', '>=', now()->subDays(7));
@@ -80,10 +83,12 @@ class HomeController extends Controller
             ->get();
 
         // Most Popular (berdasarkan views terbanyak)
-        $mostPopular = Post::where('status', 'published')
+        $mostPopulars = Post::where('status', 'published')
             ->orderByDesc('views')
+            ->with(['category'])
             ->take(5)
-            ->get();
+            ->get()
+            ->shuffle();
 
         // Latest Posts (berdasarkan tanggal publish terbaru)
         $latest = Post::where('status', 'published')
@@ -92,14 +97,15 @@ class HomeController extends Controller
             ->get();
 
         return Inertia::render('Home', [
-            'trending'     => $trending,
-            'mostPopular'  => $mostPopular,
+            'trendings'     => $trendings,
+            'mostPopulars'  => $mostPopulars,
             'latest'       => $latest,
             'slides'       => $slides,
             'rightCards'   => $rightCards,
             'companyProfile' => $companyProfile,
             'footerContacts' => $footerContacts,
             'sosmedIcons' => $sosmedIcons,
+            'categories' => $categories,
         ]);
     }
 }

@@ -3,6 +3,8 @@
   :company-profile="props.companyProfile"
   :sosmed-icons="props.sosmedIcons"
   :footer-contacts="props.footerContacts"
+  :categories="props.categories"
+  :most-populars="props.mostPopulars"
    >
     <div class="max-w-screen-xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Kiri (Slider) -->
@@ -18,14 +20,16 @@
         >
           <SwiperSlide v-for="(slide, i) in slides" :key="i">
             <div class="relative">
-              <img :src="slide.image" class="w-full h-[400px] object-cover" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-6 flex flex-col justify-end">
-                <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded mb-2 w-fit">
-                  {{ slide.category }}
-                </span>
-                <h2 class="text-2xl font-bold text-white">{{ slide.title }}</h2>
-                <p class="text-sm text-gray-200">by {{ slide.author }} • {{ slide.date }}</p>
-              </div>
+              <a :href="`/news/${slide.slug}`">
+                <img :src="slide.image" class="w-full h-[400px] object-cover" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-6 flex flex-col justify-end">
+                  <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded mb-2 w-fit">
+                    {{ slide.category }}
+                  </span>
+                  <h2 class="text-2xl font-bold text-white line-clamp-2">{{ slide.title }}</h2>
+                  <p class="text-sm text-gray-200">by {{ slide.author }} • {{ slide.date }}</p>
+                </div>
+              </a>
             </div>
           </SwiperSlide>
         </Swiper>
@@ -38,14 +42,16 @@
           :key="i"
           class="relative rounded-lg overflow-hidden"
         >
+        <a href="#">
           <img :src="card.image" class="w-full h-[190px] object-cover" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-4 flex flex-col justify-end">
             <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded mb-2 w-fit">
               {{ card.category }}
             </span>
-            <h3 class="text-lg font-semibold text-white">{{ card.title }}</h3>
+            <h3 class="text-lg font-semibold text-white line-clamp-2">{{ card.title }}</h3>
             <p class="text-xs text-gray-200">by {{ card.author }} • {{ card.date }}</p>
           </div>
+        </a>
         </div>
       </div>
     </div>
@@ -77,6 +83,8 @@ const props = defineProps({
   companyProfile: { type : Object, required: true },
   sosmedIcons: { type: Array, default: () => [] },
   footerContacts: { type: Array, default: () => [] },
+  categories: { type: Array, default: () => [] },
+  mostPopulars: { type: Array, default: () => [] },
 })
 
 </script>

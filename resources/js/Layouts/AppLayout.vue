@@ -15,7 +15,9 @@
     <!-- Footer -->
     <Footer
     :sosmed-icons="sosmedIcons"
-    :footer-contacts="props.footerContacts"  />
+    :footer-contacts="props.footerContacts"
+    :categories="props.categories"
+    :most-populars="props.mostPopulars"  />
   </div>
 </template>
 
@@ -27,5 +29,7 @@ const props = defineProps({
   companyProfile: { type: Object, required: true },
   sosmedIcons: { type: Array, default: () => [] },
   footerContacts: { type: Array, default: () => [] },
+  categories: { type: Array, default: () => [] },
+  mostPopulars: { type: Array, default: () => [] },
 })
 </script>

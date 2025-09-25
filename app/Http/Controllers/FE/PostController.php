@@ -10,12 +10,10 @@ use App\Models\FooterContact;
 use App\Models\CompanyProfile;
 use App\Http\Controllers\Controller;
 
-class CategoryController extends Controller
+class PostController extends Controller
 {
-    public function show($slug)
+    public function index()
     {
-        $category = Category::where('slug', $slug)->firstOrFail();
-
         // Latest Posts (berdasarkan tanggal publish terbaru)
         $latestNews = Post::where('status', 'published')
             ->latest('published_at')
@@ -76,10 +74,7 @@ class CategoryController extends Controller
 
         $categories = Category::all();
 
-        $categoryPosts = Post::where('status', 'published')
-        ->whereHas('category', function ($q) use ($slug) {
-            $q->where('slug', $slug);
-        })
+        $postNews = Post::where('status', 'published')
         ->latest('published_at')
         ->with(['category', 'backendUser'])
         ->paginate(6)
@@ -118,10 +113,9 @@ class CategoryController extends Controller
                 ];
             });
 
-        return Inertia::render('Categories/category', [
-            'category' => $category,
+        return Inertia::render('Posts/index', [
             'categories' => $categories,
-            'categoryPosts'  => $categoryPosts,
+            'postNews'  => $postNews,
             'latestNews'       => $latestNews,
             'trendingNews'       => $trendingNews,
             'companyProfile' => $companyProfile,
@@ -131,10 +125,9 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function posts($slug)
+    public function posts()
     {
         $posts = Post::where('status', 'published')
-            ->whereHas('category', fn($q) => $q->where('slug', $slug))
             ->latest('published_at')
             ->with(['category', 'backendUser'])
             ->paginate(6)

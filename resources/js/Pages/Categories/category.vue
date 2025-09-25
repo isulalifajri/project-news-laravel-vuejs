@@ -4,6 +4,7 @@
     :sosmed-icons="props.sosmedIcons"
     :footer-contacts="props.footerContacts"
     :categories="props.categories"
+    :most-populars="props.mostPopulars"
   >
     <!-- Hero Image -->
     <div class="relative w-full h-64 md:h-80 lg:h-96 mb-10">
@@ -86,6 +87,7 @@ const props = defineProps({
   categories: Array,
   categoryPosts: Object,
   latestNews: Array,
+  mostPopulars: Array,
   trendingNews: Array,
   companyProfile: Object,
   sosmedIcons: Array,

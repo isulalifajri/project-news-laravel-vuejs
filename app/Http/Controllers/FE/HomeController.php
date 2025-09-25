@@ -114,7 +114,7 @@ class HomeController extends Controller
                     'date'     => $post->published_at?->format('M d, Y'),
                     'slug'     => $post->slug,
                 ];
-            });;
+            });
 
         // Latest Posts (berdasarkan tanggal publish terbaru)
         $latestNews = Post::where('status', 'published')

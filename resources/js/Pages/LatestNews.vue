@@ -6,7 +6,6 @@
       <section class="bg-white shadow rounded-lg p-4">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold uppercase">Latest News</h2>
-          <a href="#" class="text-sm text-blue-500 hover:underline">View All</a>
         </div>
 
         <!-- 2 Card Besar -->

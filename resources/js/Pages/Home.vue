@@ -89,7 +89,6 @@ const props = defineProps({
   mostPopulars: { type: Array, default: () => [] },
   latestNews: { type: Array, default: () => [] },
   trendingNews: { type: Array, default: () => [] },
-  mostPopulars: { type: Array, default: () => [] },
 })
 
 </script>

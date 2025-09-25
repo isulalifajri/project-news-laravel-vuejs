@@ -318,7 +318,7 @@ di dalam createIntertiaApp tambahkan ini: .use(ZiggyVue, Ziggy)
 geneate ziggi.js dg perintah ini:
 
 ```
-php artisan ziggy:generate resources/js/ziggy.js
+php artisan ziggy:generate resources/js/ziggy.js //setiap kali edit and create route jalankan ini
 ```
 
 install juga versi npm nya: 

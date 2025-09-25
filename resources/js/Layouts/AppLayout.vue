@@ -3,6 +3,7 @@
     <!-- Header -->
     <Header 
     :company-profile="companyProfile" 
+    :categories="props.categories"
     :sosmed-icons="sosmedIcons"  
     :footer-contatcs="sosmedIcons"  
     />

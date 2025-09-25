@@ -1,5 +1,10 @@
 <template>
-  <AppLayout>
+  <AppLayout
+  :company-profile="props.companyProfile"
+  :sosmed-icons="props.sosmedIcons"
+  :footer-contacts="props.footerContacts"
+  :categories="props.categories"
+   >
     <!-- Hero Image -->
     <div class="relative w-full h-64 md:h-80 lg:h-96 mb-10">
       <img
@@ -9,7 +14,7 @@
       />
       <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
         <h1 class="text-3xl md:text-5xl font-bold text-white">
-          Category: Business
+          Category: {{ currentCategory.name }}
         </h1>
       </div>
     </div>
@@ -20,13 +25,13 @@
       <a
         v-for="(cat, i) in categories"
         :key="i"
-        :href="`/category/${cat.slug}`"
-        class="flex-shrink-0 bg-[#0b132b] text-gray-300 font-semibold 
-              px-2 py-1 text-xs    <!-- default (mobile) kecil -->
-              sm:px-3 sm:py-1.5 sm:text-sm   <!-- layar ≥640px -->
-              md:px-4 md:py-2 md:text-base   <!-- layar ≥768px -->
-              rounded-full shadow-md 
-              hover:bg-blue-500 hover:text-white transition duration-300"
+        :href="route('category.show', cat.slug)"
+        :class="[
+          'flex-shrink-0 rounded-full shadow-md px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2 md:text-base transition duration-300',
+          currentCategory.slug === cat.slug
+            ? 'bg-blue-500 text-white'
+            : 'bg-[#0b132b] text-gray-300 hover:bg-blue-500 hover:text-white'
+        ]"
       >
         {{ cat.name }}
       </a>
@@ -34,7 +39,7 @@
   </div>
 
     <!-- Category News -->
-    <div class="max-w-screen-xl mx-auto px-4">
+    <div class="max-w-screen-xl mx-auto px-4 mt-3">
       <section>
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl font-bold uppercase">Category News</h2>
@@ -42,11 +47,21 @@
         </div>
 
        <!-- Panggil komponen News -->
-       <News />
+       <News :posts="props.categoryPosts.data" />
+          <div class="text-center mt-6" v-if="props.categoryPosts.next_page_url">
+            <button 
+              @click="loadMore" 
+              class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Load More
+            </button>
+          </div>
       </section>
     </div>
     
-    <LatestNews />
+    <LatestNews 
+    :latest-news="props.latestNews"
+    :trending-news="props.trendingNews"/>
 
    <!-- Banner Iklan -->
   <div class="w-full my-10 flex justify-center">
@@ -65,13 +80,20 @@
   import LatestNews from '@/Pages/LatestNews.vue'
   import News from '@/Pages/News.vue'
 
-  const categories = [
-  { name: "Business", slug: "business" },
-  { name: "Technology", slug: "technology" },
-  { name: "World", slug: "world" },
-  { name: "Sports", slug: "sports" },
-  { name: "Health", slug: "health" },
-  { name: "Entertainment", slug: "entertainment" },
-  { name: "Politics", slug: "politics" },
-]
+  const props = defineProps({
+    category: Object,
+    categories: Array,
+    categoryPosts: Array,
+    latestNews: Array,
+    trendingNews: Array,
+    companyProfile: Object,
+    sosmedIcons: Array,
+    footerContacts: Array,
+  })
+
+  import { usePage } from '@inertiajs/vue3'
+
+  const page = usePage()
+  const currentCategory = props.category
+
 </script>

@@ -141,17 +141,27 @@
       <div class="max-w-screen-xl mx-auto px-4">
         <ul class="flex space-x-8 text-white font-medium">
           <li><Link :href="route('home')" class="block py-3 px-4 hover:bg-blue-500 hover:text-black">NEWS</Link></li>
-          <li><Link :href="route('category')" class="block py-3 px-4 hover:bg-blue-500 hover:text-black">CATEGORY</Link></li>
-          <li><Link :href="route('show')" class="block py-3 px-4 hover:bg-blue-500 hover:text-black">SINGLE NEWS</Link></li>
           <li class="relative group">
             <button class="block py-3 px-4 hover:bg-blue-500 hover:text-black flex items-center">
-              DROPDOWN <i class="fas fa-chevron-down ml-2 text-sm"></i>
+              CATEGORY <i class="fas fa-chevron-down ml-2 text-sm"></i>
             </button>
-            <ul class="absolute left-0 hidden group-hover:block bg-white shadow-md text-gray-800 min-w-[150px]">
-              <li><Link href="/submenu1" class="block px-4 py-2 hover:bg-gray-100">Submenu 1</Link></li>
-              <li><Link href="/submenu2" class="block px-4 py-2 hover:bg-gray-100">Submenu 2</Link></li>
+            <ul
+              class="absolute left-0 hidden group-hover:block bg-white shadow-md text-gray-800 min-w-[150px] z-50"
+            >
+              <li
+                v-for="cat in categories"
+                :key="cat.id"
+              >
+                <Link
+                  :href="route('category.show', cat.slug)"
+                  class="block px-4 py-2 hover:bg-blue-100"
+                >
+                  {{ cat.name }}
+                </Link>
+              </li>
             </ul>
           </li>
+          <li><Link :href="route('show')" class="block py-3 px-4 hover:bg-blue-500 hover:text-black">SINGLE NEWS</Link></li>
           <li><Link href="/contact" class="block py-3 px-4 hover:bg-blue-500 hover:text-black">CONTACT</Link></li>
         </ul>
       </div>
@@ -244,7 +254,8 @@ import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
   companyProfile: { type: Object, required: true },
-  sosmedIcons: { type: Array, default: () => [] }
+  categories: { type: Array, default: () => [] },
+  sosmedIcons: { type: Array, default: () => [] },
 })
 
 const nameWords = computed(() => (props.companyProfile?.name || '').split(' '))

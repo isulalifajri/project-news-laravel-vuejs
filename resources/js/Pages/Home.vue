@@ -55,8 +55,10 @@
         </div>
       </div>
     </div>
-    <LatestNews :latest-News="props.latestNews" />
-    <MostPopular /> <!-- Tambahin ini -->
+    <LatestNews 
+    :latest-News="props.latestNews"
+    :trending-News="props.trendingNews" />
+    <MostPopular :most-populars="props.mostPopulars" />
   </AppLayout>
 </template>
 
@@ -86,6 +88,8 @@ const props = defineProps({
   categories: { type: Array, default: () => [] },
   mostPopulars: { type: Array, default: () => [] },
   latestNews: { type: Array, default: () => [] },
+  trendingNews: { type: Array, default: () => [] },
+  mostPopulars: { type: Array, default: () => [] },
 })
 
 </script>

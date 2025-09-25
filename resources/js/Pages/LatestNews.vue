@@ -16,6 +16,7 @@
             :key="i"
             class="border border-gray-300 rounded-lg overflow-hidden shadow-sm"
           >
+          <!-- <a :href="`/news/${news.slug}`"> -->
             <img :src="news.image" class="w-full h-48 object-cover" />
             <div class="p-4">
               <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
@@ -27,6 +28,7 @@
                 By {{ news.author }} • {{ news.date }}
               </p>
             </div>
+          <!-- </a> -->
           </div>
         </div>
 
@@ -35,8 +37,8 @@
           <div
             v-for="(news, i) in latestNews.slice(3, 7)"
             :key="i"
-            class="flex items-center space-x-3 border-b border-gray-300 pb-3"
           >
+          <a :href="`/news/${news.slug}`" class="flex items-center space-x-3 border-b border-gray-300 pb-3">
             <img :src="news.image" class="w-24 h-16 object-cover rounded" />
             <div>
               <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
@@ -47,13 +49,14 @@
               </h4>
               <p class="text-xs text-gray-400">{{ news.date }}</p>
             </div>
+          </a>
           </div>
         </div>
       </section>
     </div>
 
     <!-- Trending News -->
-    <TrendingNews />
+    <TrendingNews :trending-News="props.trendingNews" />
 
   </div>
 </template>
@@ -65,6 +68,7 @@ import TrendingNews from "@/Pages/TrendingNews.vue"
 const props = defineProps({
   mostPopulars: { type: Array, default: () => [] },
   latestNews: { type: Array, default: () => [] },
+  trendingNews: { type: Array, default: () => [] },
 })
 
 </script>

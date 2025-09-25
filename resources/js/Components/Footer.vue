@@ -51,10 +51,10 @@
           <div v-for="(post, i) in props.mostPopulars.slice(0, 3)" :key="i" class="mb-4">
             <a :href="`/news/${post.slug}`">
               <span class="bg-blue-500 text-black text-xs font-bold px-2 py-1">
-                {{ post.category?.name ?? 'GENERAL' }}
+                {{ post.category }}
               </span>
               <span class="text-sm ml-2">
-                {{ new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) }}
+                {{ post.date }}
               </span>
               <p class="mt-2 text-sm uppercase line-clamp-2">{{ post.title }}</p>
             </a>

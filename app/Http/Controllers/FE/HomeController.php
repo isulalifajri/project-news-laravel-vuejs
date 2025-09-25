@@ -73,23 +73,48 @@ class HomeController extends Controller
             });
 
         // Trending News (ditandai is_featured)
-        $trendings = Post::where('status', 'published')
+        $trendingNews = Post::where('status', 'published')
             ->where(function ($query) {
                 $query->where('is_featured', true)
                     ->orWhere('published_at', '>=', now()->subDays(7));
             })
             ->orderByDesc('views') // urutkan berdasarkan views
             ->latest('published_at') // kalau views sama, urutkan tanggal terbaru
+            ->with(['category', 'backendUser'])
             ->take(5)
-            ->get();
+            ->get()
+            ->map(function ($post) {
+                return [
+                    'image'    => $post->thumbnail
+                                    ? asset('storage/' . $post->thumbnail)
+                                    : "https://picsum.photos/800/400?random=" . rand(1, 1000),
+                    'category' => $post->category?->name ?? 'GENERAL',
+                    'title'    => $post->title,
+                    'author'   => $post->backendUser?->name ?? 'Unknown',
+                    'date'     => $post->published_at?->format('M d, Y'),
+                    'slug'     => $post->slug,
+                ];
+            });
 
         // Most Popular (berdasarkan views terbanyak)
         $mostPopulars = Post::where('status', 'published')
             ->orderByDesc('views')
-            ->with(['category'])
+            ->with(['category', 'backendUser'])
             ->take(5)
             ->get()
-            ->shuffle();
+            ->shuffle()
+            ->map(function ($post) {
+                return [
+                    'image'    => $post->thumbnail
+                                    ? asset('storage/' . $post->thumbnail)
+                                    : "https://picsum.photos/800/400?random=" . rand(1, 1000),
+                    'category' => $post->category?->name ?? 'GENERAL',
+                    'title'    => $post->title,
+                    'author'   => $post->backendUser?->name ?? 'Unknown',
+                    'date'     => $post->published_at?->format('M d, Y'),
+                    'slug'     => $post->slug,
+                ];
+            });;
 
         // Latest Posts (berdasarkan tanggal publish terbaru)
         $latestNews = Post::where('status', 'published')
@@ -112,7 +137,7 @@ class HomeController extends Controller
             });
 
         return Inertia::render('Home', [
-            'trendings'     => $trendings,
+            'trendingNews'     => $trendingNews,
             'mostPopulars'  => $mostPopulars,
             'latestNews'       => $latestNews,
             'slides'       => $slides,

@@ -4,10 +4,11 @@
 
     <div class="grid md:grid-cols-4 gap-6">
       <div
-        v-for="(item, index) in mostPopular"
+        v-for="(item, index) in mostPopulars.slice(0, 4)"
         :key="index"
         class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
       >
+      <a :href="`/news/${item.slug}`">
         <!-- Gambar -->
         <img
           :src="item.image"
@@ -18,7 +19,7 @@
         <!-- Konten -->
         <div class="p-4">
           <span
-            class="bg-yellow-500 text-white text-xs px-2 py-1 rounded inline-block w-fit"
+            class="bg-blue-500 text-white text-xs px-2 py-1 rounded inline-block w-fit"
           >
             {{ item.category }}
           </span>
@@ -31,6 +32,7 @@
             {{ item.author }} • {{ item.date }}
           </p>
         </div>
+      </a>
       </div>
     </div>
   </div>
@@ -38,34 +40,7 @@
 
 <script setup>
 
-const mostPopular = [
-  {
-    image: "https://picsum.photos/300/160?random=1",
-    category: "Tech",
-    title: "5 Gadget Terbaru yang Wajib Kamu Punya di 2025",
-    author: "Jhon",
-    date: "Sep 20, 2025",
-  },
-  {
-    image: "https://picsum.photos/300/160?random=2",
-    category: "Business",
-    title: "Strategi Bisnis yang Lagi Booming Tahun Ini",
-    author: "Admin",
-    date: "Sep 19, 2025",
-  },
-  {
-    image: "https://picsum.photos/300/160?random=3",
-    category: "Lifestyle",
-    title: "10 Tips Hidup Sehat di Era Digital",
-    author: "Jhon",
-    date: "Sep 18, 2025",
-  },
-  {
-    image: "https://picsum.photos/300/160?random=4",
-    category: "Travel",
-    title: "Destinasi Wisata Paling Populer Tahun 2025",
-    author: "Jane",
-    date: "Sep 17, 2025",
-  },
-]
+const props = defineProps({
+  mostPopulars: { type: Array, default: () => [] },
+})
 </script>

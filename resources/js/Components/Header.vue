@@ -8,7 +8,8 @@
           <span class="text-gray-400 hidden sm:inline">{{ formattedDate }}</span>
           <nav class="hidden sm:flex space-x-4 border-l border-gray-700 pl-4">
             <Link :href="route('contact')" class="hover:text-blue-400 transition">Contact</Link>
-            <Link href="/login" class="hover:text-blue-400 transition">Login</Link>
+
+            <a :href="route('google.login')" v-if="!isLoggedIn" class="hover:text-blue-400 transition">Login</a>
           </nav>
         </div>
 
@@ -68,7 +69,22 @@
               @click="userDropdown = !userDropdown"
               class="text-gray-600 hover:text-blue-500 focus:outline-none"
             >
-              <i class="fas fa-user-circle text-5xl"></i>
+              <!-- <i class="fas fa-user-circle text-5xl cursor-pointer"></i> -->
+               <!-- Belum login → icon default -->
+              <i v-if="!user" class="fas fa-user-circle text-5xl cursor-pointer"></i>
+
+              <!-- Sudah login dan ada avatar -->
+              <img
+                v-else-if="user?.avatar"
+                :src="user.avatar"
+                alt="User Avatar"
+                class="w-12 h-12 object-cover rounded-full cursor-pointer"
+              />
+
+              <!-- Sudah login tapi tanpa avatar → inisial -->
+              <span v-else class="font-bold text-lg text-gray-600">
+                {{ initials }}
+              </span>
             </button>
 
             <!-- Dropdown Card -->
@@ -93,32 +109,38 @@
                 <!-- 👤 Kondisional: login atau user info -->
                 <div class="mt-3 border-t pt-3">
                   <div v-if="!isLoggedIn">
-                    <Link
-                      href="/login"
+                    <a
+                      :href="route('google.login')"
                       class="block w-full text-center bg-blue-500 text-black py-2 rounded-lg hover:bg-blue-600 font-semibold"
                     >
                       Login
-                    </Link>
+                    </a>
                   </div>
 
                   <div v-else class="flex items-center gap-3">
                     <img
-                      src="https://i.pravatar.cc/40?img=12"
-                      alt="User"
-                      class="w-10 h-10 rounded-full border border-gray-600"
-                    />
+                        v-if="user?.avatar"
+                        :src="user.avatar"
+                        alt="User Avatar"
+                        class="w-12 h-12 object-cover rounded-full cursor-pointer"
+                      />
+                    <span v-else class="font-bold text-lg text-gray-600">
+                      {{ initials }}
+                    </span>
                     <div class="flex-1">
-                      <p class="text-sm font-semibold">John Doe</p>
+                      <p class="text-sm font-semibold capitalize">{{ user.name }}</p>
                       <Link href="/profile" class="text-xs text-gray-400 hover:text-blue-500">
                         Lihat Profil
                       </Link>
                     </div>
-                    <button
-                      @click="logout"
-                      class="text-sm text-red-400 hover:text-red-500 font-medium"
+                    <Link
+                      :href="route('logout')"
+                      method="post"
+                      as="button"
+                      class="text-sm text-red-400 hover:text-red-500 font-medium cursor-pointer"
                     >
                       Logout
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -242,35 +264,40 @@
           <div class="pt-4 border-t border-gray-700">
             <!-- Jika belum login -->
             <div v-if="!isLoggedIn">
-              <Link
-                href="/login"
+              <a
+                :href="route('google.login')"
                 class="block w-full text-center bg-blue-500 text-black py-2 rounded-lg hover:bg-blue-600 font-semibold"
               >
                 Login
-              </Link>
+              </a>
             </div>
 
             <!-- Jika sudah login -->
             <div v-else class="flex items-center gap-3">
               <!-- Avatar user -->
               <img
-                src="https://i.pravatar.cc/40?img=12"
-                alt="User"
-                class="w-10 h-10 rounded-full border border-gray-600"
+                v-if="user?.avatar"
+                :src="user.avatar"
+                alt="User Avatar"
+                class="w-12 h-12 object-cover rounded-full cursor-pointer"
               />
+              <span v-else class="font-bold text-lg text-gray-600">
+                {{ initials }}
+              </span>
               <div class="flex-1">
-                <p class="text-sm font-semibold">John Doe</p>
+                <p class="text-sm font-semibold">{{ user.name }}</p>
                 <Link href="/profile" class="text-xs text-gray-400 hover:text-blue-400">
                   Lihat Profil
                 </Link>
               </div>
               <!-- Logout -->
-              <button
-                @click="logout"
-                class="text-sm text-red-400 hover:text-red-500 font-medium"
-              >
-                Logout
-              </button>
+              <Link
+                :href="route('logout')"
+                method="post"
+                as="button"
+                class="text-sm text-red-400 hover:text-red-500 font-medium cursor-pointer"
+              >Logout
+              </Link>
             </div>
           </div>
 
@@ -321,12 +348,19 @@ function handleClickOutside(e) {
 
 const mobileOpen = ref(false)
 const mobileCategoryOpen = ref(false)
-const isLoggedIn = ref(false)
+const isLoggedIn = computed(() => !!page.props.auth.user)
 
-function logout() {
-  isLoggedIn.value = false
-  console.log("User logged out")
-}
+const user = computed(() => page.props.auth?.user ?? null)
+
+// Ambil inisial dari nama user
+const initials = computed(() => {
+  if (!user.value?.name) return "?"
+  return user.value.name
+    .split(" ")                // pisah nama
+    .map(word => word[0])      // ambil huruf depan
+    .join("")                  // gabung
+    .toUpperCase()             // kapital
+})
 
 const userDropdown = ref(false)
 const dropdownRef = ref(null)

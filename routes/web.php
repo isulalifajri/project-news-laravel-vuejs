@@ -28,5 +28,13 @@ Route::get('/show/{slug}', [PostController::class, 'showNews'])->name('show.news
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 
-Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google.login');
-Route::get('auth/google/callback', [GoogleController::class, 'callback']);
+Route::middleware('guest')->group(function () {
+    Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google.login');
+    Route::get('auth/google/callback', [GoogleController::class, 'callback']);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [GoogleController::class, 'logout'])
+        ->name('logout');
+});
+

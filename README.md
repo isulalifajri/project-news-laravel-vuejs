@@ -473,3 +473,19 @@ di blade/vue kita tinggal kasih ini:
 </a>
 
 ```
+
+untuk mengetahui menggunakan auth di vue js tambahkan ini di AppServiceProvider.php
+
+```
+use Inertia\Inertia;
+public function boot(): void
+{
+    Inertia::share([
+        'auth' => fn () => [
+            'user' => auth()->user(),
+        ],
+    ]);
+}
+```
+
+kemudiann di vue tambahkan ini: `const isLoggedIn = computed(() => !!page.props.auth.user)`

@@ -82,7 +82,10 @@
               />
 
               <!-- Sudah login tapi tanpa avatar → inisial -->
-              <span v-else class="font-bold text-lg text-gray-600">
+              <span
+                v-else
+                class="flex items-center justify-center w-12 h-12 font-bold text-lg text-gray-600 rounded-full bg-blue-300"
+              >
                 {{ initials }}
               </span>
             </button>
@@ -124,7 +127,10 @@
                         alt="User Avatar"
                         class="w-12 h-12 object-cover rounded-full cursor-pointer"
                       />
-                    <span v-else class="font-bold text-lg text-gray-600">
+                    <span
+                      v-else
+                      class="flex items-center justify-center w-10 h-10 font-bold text-lg text-gray-600 rounded-full bg-blue-300"
+                    >
                       {{ initials }}
                     </span>
                     <div class="flex-1">
@@ -281,7 +287,10 @@
                 alt="User Avatar"
                 class="w-12 h-12 object-cover rounded-full cursor-pointer"
               />
-              <span v-else class="font-bold text-lg text-gray-600">
+              <span
+                v-else
+                class="flex items-center justify-center w-10 h-10 font-bold text-lg text-gray-600 rounded-full bg-blue-300"
+              >
                 {{ initials }}
               </span>
               <div class="flex-1">

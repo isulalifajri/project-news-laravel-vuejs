@@ -3,134 +3,97 @@
 namespace App\Http\Controllers\FE;
 
 use App\Models\Post;
-use Inertia\Inertia;
 use App\Models\Category;
-use Illuminate\Http\Request;
 use App\Models\FooterContact;
 use App\Models\CompanyProfile;
+use Inertia\Inertia;
 use App\Http\Controllers\Controller;
+use App\Services\PostService;
 
 class CategoryController extends Controller
 {
+    protected $postService;
+
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+    }
+
+    /**
+     * Tampilkan halaman category dengan post
+     */
     public function show($slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
 
-        // Latest Posts (berdasarkan tanggal publish terbaru)
-        $latestNews = Post::where('status', 'published')
-            ->latest('published_at')
-            ->with(['category', 'backendUser'])
-            ->take(10)
-            ->get()
-            ->shuffle()
-            ->map(function ($post) {
-                return [
-                    'image'    => $post->thumbnail
-                                    ? asset('storage/' . $post->thumbnail)
-                                    : "https://picsum.photos/800/400?random=" . rand(1, 1000),
-                    'category' => $post->category?->name ?? 'GENERAL',
-                    'title'    => $post->title,
-                    'author'   => $post->backendUser?->name ?? 'Unknown',
-                    'date'     => $post->published_at?->format('M d, Y'),
-                    'slug'     => $post->slug,
-                ];
-            });
+        // Company Profile
+        $companyProfile = CompanyProfile::first() ?? new CompanyProfile([
+            'name' => 'SKY NEWS',
+            'about' => '',
+            'logo' => 'https://picsum.photos/800/400?random=logo',
+        ]);
 
-        $trendingNews = Post::where('status', 'published')
-            ->where(function ($query) {
-                $query->where('is_featured', true)
-                    ->orWhere('published_at', '>=', now()->subDays(7));
-            })
-            ->orderByDesc('views') // urutkan berdasarkan views
-            ->latest('published_at') // kalau views sama, urutkan tanggal terbaru
-            ->with(['category', 'backendUser'])
-            ->take(5)
-            ->get()
-            ->map(function ($post) {
-                return [
-                    'image'    => $post->thumbnail
-                                    ? asset('storage/' . $post->thumbnail)
-                                    : "https://picsum.photos/800/400?random=" . rand(1, 1000),
-                    'category' => $post->category?->name ?? 'GENERAL',
-                    'title'    => $post->title,
-                    'author'   => $post->backendUser?->name ?? 'Unknown',
-                    'date'     => $post->published_at?->format('M d, Y'),
-                    'slug'     => $post->slug,
-                ];
-            });
-
-        // Ambil data Company Profile (anggap cuma satu row)
-        $companyProfile = CompanyProfile::first();
-
-        if (!$companyProfile) {
-            $companyProfile = new CompanyProfile([
-                'name' => 'SKY NEWS',
-                'about' => '',
-                'logo' => 'https://picsum.photos/800/400?random=logo',
-            ]);
-        }
-
-        // Ambil data Footer yang aktif
-        $footerContacts = FooterContact::where('is_active', true)
-        ->whereNull('icon')->get();
-
+        // Footer & Sosmed
+        $footerContacts = FooterContact::where('is_active', true)->whereNull('icon')->get();
+        $sosmedIcons = FooterContact::where('is_active', true)->whereNotNull('icon')->get();
         $categories = Category::all();
 
+        // Latest News
+        $latestNews = $this->postService->transformCollection(
+            Post::where('status', 'published')
+                ->latest('published_at')
+                ->with(['category', 'backendUser'])
+                ->take(10)
+                ->get()
+                ->shuffle()
+        );
+
+        // Trending News
+        $trendingNews = $this->postService->transformCollection(
+            Post::where('status', 'published')
+                ->where(fn($q) => $q->where('is_featured', true)
+                                    ->orWhere('published_at', '>=', now()->subDays(7)))
+                ->orderByDesc('views')
+                ->latest('published_at')
+                ->with(['category', 'backendUser'])
+                ->take(5)
+                ->get()
+        );
+
+        // Most Popular
+        $mostPopulars = $this->postService->transformCollection(
+            Post::where('status', 'published')
+                ->orderByDesc('views')
+                ->with(['category', 'backendUser'])
+                ->take(5)
+                ->get()
+                ->shuffle()
+        );
+
+        // Category Posts (pagination)
         $categoryPosts = Post::where('status', 'published')
-        ->whereHas('category', function ($q) use ($slug) {
-            $q->where('slug', $slug);
-        })
-        ->latest('published_at')
-        ->with(['category', 'backendUser'])
-        ->paginate(6)
-        ->through(function ($post) {
-            return [
-                'image'    => $post->thumbnail
-                                ? asset('storage/' . $post->thumbnail)
-                                : "https://picsum.photos/800/400?random=" . rand(1, 1000),
-                'category' => $post->category?->name ?? 'GENERAL',
-                'title'    => $post->title,
-                'author'   => $post->backendUser?->name ?? 'Unknown',
-                'date'     => $post->published_at?->format('M d, Y'),
-                'slug'     => $post->slug,
-            ];
-        });
-
-        $sosmedIcons = FooterContact::where('is_active', true)
-        ->whereNotNull('icon')->get();
-
-        $mostPopulars = Post::where('status', 'published')
-            ->orderByDesc('views')
+            ->whereHas('category', fn($q) => $q->where('slug', $slug))
+            ->latest('published_at')
             ->with(['category', 'backendUser'])
-            ->take(5)
-            ->get()
-            ->shuffle()
-            ->map(function ($post) {
-                return [
-                    'image'    => $post->thumbnail
-                                    ? asset('storage/' . $post->thumbnail)
-                                    : "https://picsum.photos/800/400?random=" . rand(1, 1000),
-                    'category' => $post->category?->name ?? 'GENERAL',
-                    'title'    => $post->title,
-                    'author'   => $post->backendUser?->name ?? 'Unknown',
-                    'date'     => $post->published_at?->format('M d, Y'),
-                    'slug'     => $post->slug,
-                ];
-            });
+            ->paginate(6)
+            ->through(fn($post) => $this->postService->transformPost($post));
 
         return Inertia::render('Categories/category', [
-            'category' => $category,
-            'categories' => $categories,
+            'category'       => $category,
+            'categories'     => $categories,
             'categoryPosts'  => $categoryPosts,
-            'latestNews'       => $latestNews,
-            'trendingNews'       => $trendingNews,
+            'latestNews'     => $latestNews,
+            'trendingNews'   => $trendingNews,
+            'mostPopulars'   => $mostPopulars,
             'companyProfile' => $companyProfile,
             'footerContacts' => $footerContacts,
-            'sosmedIcons' => $sosmedIcons,
-            'mostPopulars' => $mostPopulars
+            'sosmedIcons'    => $sosmedIcons,
         ]);
     }
 
+    /**
+     * JSON API untuk posts per category
+     */
     public function posts($slug)
     {
         $posts = Post::where('status', 'published')
@@ -138,19 +101,8 @@ class CategoryController extends Controller
             ->latest('published_at')
             ->with(['category', 'backendUser'])
             ->paginate(6)
-            ->through(fn($post) => [
-                'id' => $post->id,
-                'image' => $post->thumbnail 
-                    ? asset('storage/' . $post->thumbnail) 
-                    : "https://picsum.photos/800/400?random=" . rand(1,1000),
-                'category' => $post->category?->name ?? 'GENERAL',
-                'title' => $post->title,
-                'author' => $post->backendUser?->name ?? 'Unknown',
-                'date' => $post->published_at?->format('M d, Y'),
-                'slug' => $post->slug,
-            ]);
+            ->through(fn($post) => $this->postService->transformPost($post));
 
-        return response()->json($posts); // JSON paginator
+        return response()->json($posts);
     }
-
 }

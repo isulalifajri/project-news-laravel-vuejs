@@ -49,15 +49,17 @@
         <h3 class="text-lg font-bold mb-4">POPULAR NEWS</h3>
         <div v-if="props.mostPopulars && props.mostPopulars.length">
           <div v-for="(post, i) in props.mostPopulars.slice(0, 3)" :key="i" class="mb-4">
-            <a :href="`/news/${post.slug}`">
-              <span class="bg-blue-500 text-black text-xs font-bold px-2 py-1">
-                {{ post.category }}
-              </span>
+            <Link :href="route('show.news', post.slug)">
+              <Link :href="route('category.show', post.catSlug)">
+                <span class="bg-blue-500 text-black text-xs font-bold px-2 py-1">
+                  {{ post.category }}
+                </span>
+              </Link>
               <span class="text-sm ml-2">
                 {{ post.date }}
               </span>
               <p class="mt-2 text-sm uppercase line-clamp-2">{{ post.title }}</p>
-            </a>
+            </Link>
           </div>
         </div>
       
@@ -77,7 +79,7 @@
           <template v-if="props.categories && props.categories.length > 0">
             <span v-for="(cat, i) in props.categories" :key="i" 
               class="bg-gray-700 px-3 py-1 text-sm rounded cursor-pointer hover:bg-blue-500 hover:text-black">
-              <a :href="`/category/${cat.slug}`">{{ cat.name }}</a>
+              <Link :href="route('category.show', cat.slug)">{{ cat.name }}</Link>
             </span>
           </template>
           <template v-else>
@@ -110,6 +112,7 @@
 </template>
 
 <script setup>
+import { Link } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 
 const props = defineProps({

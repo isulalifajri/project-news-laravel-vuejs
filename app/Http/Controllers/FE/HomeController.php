@@ -3,149 +3,97 @@
 namespace App\Http\Controllers\FE;
 
 use App\Models\Post;
-use Inertia\Inertia;
-use Illuminate\Http\Request;
+use App\Models\Category;
 use App\Models\FooterContact;
 use App\Models\CompanyProfile;
+use Inertia\Inertia;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Services\PostService;
 
 class HomeController extends Controller
 {
+    protected $postService;
+
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+    }
+
     public function index()
     {
-        // Ambil data Company Profile (anggap cuma satu row)
-        $companyProfile = CompanyProfile::first();
+        // Company Profile
+        $companyProfile = CompanyProfile::first() ?? new CompanyProfile([
+            'name' => 'SKY NEWS',
+            'about' => '',
+            'logo' => 'https://picsum.photos/800/400?random=logo',
+        ]);
 
-        if (!$companyProfile) {
-            $companyProfile = new CompanyProfile([
-                'name' => 'SKY NEWS',
-                'about' => '',
-                'logo' => 'https://picsum.photos/800/400?random=logo',
-            ]);
-        }
-
-        // Ambil data Footer yang aktif
-        $footerContacts = FooterContact::where('is_active', true)
-        ->whereNull('icon')->get();
-
+        // Footer & Sosmed
+        $footerContacts = FooterContact::where('is_active', true)->whereNull('icon')->get();
+        $sosmedIcons = FooterContact::where('is_active', true)->whereNotNull('icon')->get();
         $categories = Category::all();
 
-        $sosmedIcons = FooterContact::where('is_active', true)
-        ->whereNotNull('icon')->get();
+        // Slides
+        $slides = $this->postService->transformCollection(
+            Post::where('status', 'published')
+                ->inRandomOrder()
+                ->take(5)
+                ->with(['category', 'backendUser'])
+                ->get()
+        );
 
-        $slides = Post::where('status', 'published')
-            ->inRandomOrder()
-            ->take(5)
-            ->with(['category', 'backendUser'])
-            ->get()
-            ->map(function ($post) {
-                return [
-                    'image'    => $post->thumbnail
-                                    ? asset('storage/' . $post->thumbnail)
-                                    : "https://picsum.photos/800/400?random=" . rand(1, 1000),
-                    'category' => $post->category?->name ?? '-',
-                    'title'    => $post->title,
-                    'author'   => $post->backendUser?->name ?? 'Unknown',
-                    'date'     => $post->published_at?->format('M d, Y'),
-                    'slug'     => $post->slug,
-                ];
-            });
+        // Right Cards (2 post populer/random)
+        $rightCards = $this->postService->transformCollection(
+            Post::where('status', 'published')
+                ->orderByDesc('views')
+                ->take(5)
+                ->with(['category', 'backendUser'])
+                ->get()
+                ->shuffle()
+        );
 
-        // --- Right Cards (2 post populer/random kalau tidak ada views) ---
-        $rightCards = Post::where('status', 'published')
-            ->orderByDesc('views')    // pakai views kalau ada
-            ->take(5)
-            ->with(['category', 'backendUser'])
-            ->get()
-            ->shuffle()
-            ->map(function ($post) {
-                return [
-                    'image'    => $post->thumbnail
-                                    ? asset('storage/' . $post->thumbnail)
-                                    : "https://picsum.photos/400/200?random=" . rand(1, 1000),
-                    'category' => $post->category?->name ?? '-',
-                    'title'    => $post->title,
-                    'author'   => $post->backendUser?->name ?? 'Unknown',
-                    'date'     => $post->published_at?->format('M d, Y'),
-                    'slug'     => $post->slug,
-                ];
-            });
+        // Trending News
+        $trendingNews = $this->postService->transformCollection(
+            Post::where('status', 'published')
+                ->where(fn($q) => $q->where('is_featured', true)
+                                    ->orWhere('published_at', '>=', now()->subDays(7)))
+                ->orderByDesc('views')
+                ->latest('published_at')
+                ->with(['category', 'backendUser'])
+                ->take(5)
+                ->get()
+        );
 
-        // Trending News (ditandai is_featured)
-        $trendingNews = Post::where('status', 'published')
-            ->where(function ($query) {
-                $query->where('is_featured', true)
-                    ->orWhere('published_at', '>=', now()->subDays(7));
-            })
-            ->orderByDesc('views') // urutkan berdasarkan views
-            ->latest('published_at') // kalau views sama, urutkan tanggal terbaru
-            ->with(['category', 'backendUser'])
-            ->take(5)
-            ->get()
-            ->map(function ($post) {
-                return [
-                    'image'    => $post->thumbnail
-                                    ? asset('storage/' . $post->thumbnail)
-                                    : "https://picsum.photos/800/400?random=" . rand(1, 1000),
-                    'category' => $post->category?->name ?? 'GENERAL',
-                    'title'    => $post->title,
-                    'author'   => $post->backendUser?->name ?? 'Unknown',
-                    'date'     => $post->published_at?->format('M d, Y'),
-                    'slug'     => $post->slug,
-                ];
-            });
+        // Most Popular
+        $mostPopulars = $this->postService->transformCollection(
+            Post::where('status', 'published')
+                ->orderByDesc('views')
+                ->with(['category', 'backendUser'])
+                ->take(5)
+                ->get()
+                ->shuffle()
+        );
 
-        // Most Popular (berdasarkan views terbanyak)
-        $mostPopulars = Post::where('status', 'published')
-            ->orderByDesc('views')
-            ->with(['category', 'backendUser'])
-            ->take(5)
-            ->get()
-            ->shuffle()
-            ->map(function ($post) {
-                return [
-                    'image'    => $post->thumbnail
-                                    ? asset('storage/' . $post->thumbnail)
-                                    : "https://picsum.photos/800/400?random=" . rand(1, 1000),
-                    'category' => $post->category?->name ?? 'GENERAL',
-                    'title'    => $post->title,
-                    'author'   => $post->backendUser?->name ?? 'Unknown',
-                    'date'     => $post->published_at?->format('M d, Y'),
-                    'slug'     => $post->slug,
-                ];
-            });
-
-        // Latest Posts (berdasarkan tanggal publish terbaru)
-        $latestNews = Post::where('status', 'published')
-            ->latest('published_at')
-            ->with(['category', 'backendUser'])
-            ->take(10)
-            ->get()
-            ->shuffle()
-            ->map(function ($post) {
-                return [
-                    'image'    => $post->thumbnail
-                                    ? asset('storage/' . $post->thumbnail)
-                                    : "https://picsum.photos/800/400?random=" . rand(1, 1000),
-                    'category' => $post->category?->name ?? 'GENERAL',
-                    'title'    => $post->title,
-                    'author'   => $post->backendUser?->name ?? 'Unknown',
-                    'date'     => $post->published_at?->format('M d, Y'),
-                    'slug'     => $post->slug,
-                ];
-            });
+        // Latest News
+        $latestNews = $this->postService->transformCollection(
+            Post::where('status', 'published')
+                ->latest('published_at')
+                ->with(['category', 'backendUser'])
+                ->take(10)
+                ->get()
+                ->shuffle()
+        );
 
         return Inertia::render('Home', [
-            'trendingNews'     => $trendingNews,
-            'mostPopulars'  => $mostPopulars,
-            'latestNews'       => $latestNews,
-            'slides'       => $slides,
-            'rightCards'   => $rightCards,
+            'slides'         => $slides,
+            'rightCards'     => $rightCards,
+            'trendingNews'   => $trendingNews,
+            'mostPopulars'   => $mostPopulars,
+            'latestNews'     => $latestNews,
             'companyProfile' => $companyProfile,
             'footerContacts' => $footerContacts,
-            'sosmedIcons' => $sosmedIcons,
-            'categories' => $categories,
+            'sosmedIcons'    => $sosmedIcons,
+            'categories'     => $categories,
         ]);
     }
 }

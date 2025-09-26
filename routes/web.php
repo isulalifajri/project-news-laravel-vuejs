@@ -22,8 +22,4 @@ Route::get('/news', [PostController::class, 'index'])
 Route::get('/news/posts', [PostController::class, 'posts'])
     ->name('posts.news');
 
-Route::get('/show', function () {
-    return Inertia::render('Posts/show', [
-        'errors' => (object)[], // kasih props kosong biar inertia gak error
-    ]);
-})->name('show');
+Route::get('/show/{slug}', [PostController::class, 'showNews'])->name('show.news');

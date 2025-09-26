@@ -308,12 +308,12 @@ composer require tightenco/ziggy
 
 di `app.js`:
 
-``
+```
 import { ZiggyVue } from 'ziggy-js'
 import { Ziggy } from './ziggy.js'
 
 di dalam createIntertiaApp tambahkan ini: .use(ZiggyVue, Ziggy)
-``
+```
 
 geneate ziggi.js dg perintah ini:
 
@@ -324,5 +324,152 @@ php artisan ziggy:generate resources/js/ziggy.js //setiap kali edit and create r
 install juga versi npm nya: 
 ```
 npm install ziggy-js
+
+```
+
+## Login menggunakan OAuth di laravel
+
+```
+Cara Dapatkan Client ID & Secret Google OAuth
+
+Masuk ke Google Cloud Console
+👉 https://console.cloud.google.com/
+
+Bikin Project Baru
+
+Klik Select a Project → New Project
+
+Kasih nama project, misalnya: News Website OAuth
+
+Klik Create
+
+Aktifkan Google OAuth
+
+Masuk ke menu APIs & Services → OAuth consent screen
+
+Pilih External → klik Create
+
+Isi detail aplikasi (nama app, email support, dll.)
+
+Simpan
+
+Buat Credentials (Client ID & Secret)
+
+Pergi ke APIs & Services → Credentials
+
+Klik + Create Credentials → pilih OAuth Client ID
+
+Pilih Web Application
+
+Isi nama, misalnya: News App OAuth
+
+Tambahkan Authorized redirect URI → contoh:
+
+http://127.0.0.1:8000/auth/google/callback
+
+
+Klik Create
+
+Dapatkan Client ID & Secret
+
+Setelah create, Google bakal kasih:
+
+Client ID
+
+Client Secret
+
+Copy → taruh ke .env Laravel:
+
+GOOGLE_CLIENT_ID=your-client-id
+GOOGLE_CLIENT_SECRET=your-client-secret
+GOOGLE_REDIRECT=http://127.0.0.1:8282/auth/google/callback
+```
+
+jalankan ini di terminal project: 
+
+```
+composer require laravel/socialite
+```
+
+Edit file `config/services.php`:
+
+```
+'google' => [
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    'redirect' => env('GOOGLE_REDIRECT'),
+],
+```
+
+tambahkan routes ke web.php:
+
+```
+use App\Http\Controllers\Auth\GoogleController;
+
+Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google.login');
+Route::get('auth/google/callback', [GoogleController::class, 'callback']);
+
+```
+
+Buat controller `app/Http/Controllers/Auth/GoogleController.php`:
+
+```
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
+class GoogleController extends Controller
+{
+    public function redirect()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function callback()
+    {
+        $googleUser = Socialite::driver('google')->stateless()->user();
+
+        // Cek apakah user sudah ada
+        $user = User::where('email', $googleUser->getEmail())->first();
+
+        if (!$user) {
+            // Kalau belum ada, buat user baru
+            $user = User::create([
+                'name' => $googleUser->getName(),
+                'email' => $googleUser->getEmail(),
+                'google_id' => $googleUser->getId(),
+                'avatar' => $googleUser->getAvatar(),
+                'password' => bcrypt(str()->random(16)), // password random biar ga kepake
+            ]);
+        }
+
+        // Login user
+        Auth::login($user);
+
+        return redirect('/'); // arahkan ke home atau dashboard
+    }
+}
+
+```
+
+di tabel user tambahkan ini:
+
+```
+$table->string('google_id')->nullable()->unique();
+$table->string('avatar')->nullable();
+```
+
+di blade/vue kita tinggal kasih ini:
+
+```
+<a href="{{ route('google.login') }}" 
+   class="px-4 py-2 bg-red-500 text-white rounded-lg shadow">
+   Login with Google
+</a>
 
 ```

@@ -19,7 +19,7 @@ class PostController extends Controller
     {
         $this->postService = $postService;
     }
-    
+
     public function index()
     {
         $latestNews = Post::where('status', 'published')
@@ -107,7 +107,7 @@ class PostController extends Controller
         $post = Post::where('slug', $slug)
             ->with(['category', 'backendUser', 'tags'])
             ->firstOrFail();
-        
+
         $mostPopulars = Post::where('status', 'published')
             ->orderByDesc('views')
             ->with(['category', 'backendUser'])
@@ -115,7 +115,7 @@ class PostController extends Controller
             ->get()
             ->shuffle()
             ->map(fn($post) => $this->postService->transformPost($post));
-        
+
         $trendingNews = Post::where('status', 'published')
             ->where(function ($query) {
                 $query->where('is_featured', true)

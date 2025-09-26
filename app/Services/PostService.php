@@ -6,7 +6,6 @@ use App\Models\Post;
 
 class PostService
 {
-    
     public function transformPost(Post $post): array
     {
         return [

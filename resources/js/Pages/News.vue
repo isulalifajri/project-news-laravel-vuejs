@@ -6,21 +6,28 @@
       :key="i"
       class="border border-gray-400 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition"
     >
+    <Link :href="route('show.news', news.slug)">
       <img :src="news.image" class="w-full h-48 object-cover" />
       <div class="p-4">
-        <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
-          {{ news.category }}
-        </span>
+        <Link :href="route('category.show', news.catSlug)">
+          <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+            {{ news.category }}
+          </span>
+        </Link>
         <h3 class="mt-2 font-semibold text-lg line-clamp-2">{{ news.title }}</h3>
         <p class="text-xs text-gray-400 mt-2">
           By {{ news.author }} • {{ news.date }}
         </p>
       </div>
+    </Link>
     </div>
   </div>
 </template>
 
 <script setup>
+
+import { Link } from '@inertiajs/vue3'
+
 const props = defineProps({
   posts: {
     type: Array,

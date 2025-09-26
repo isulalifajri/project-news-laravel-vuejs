@@ -8,7 +8,7 @@
         :key="index"
         class="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
       >
-      <a :href="`/news/${item.slug}`">
+      <Link :href="route('show.news', item.slug)">
         <!-- Gambar -->
         <img
           :src="item.image"
@@ -18,11 +18,13 @@
 
         <!-- Konten -->
         <div class="p-4">
-          <span
-            class="bg-blue-500 text-white text-xs px-2 py-1 rounded inline-block w-fit"
-          >
-            {{ item.category }}
-          </span>
+          <Link :href="route('category.show', item.catSlug)">
+            <span
+              class="bg-blue-500 text-white text-xs px-2 py-1 rounded inline-block w-fit"
+            >
+              {{ item.category }}
+            </span>
+          </Link>
 
           <h3 class="text-base font-semibold mt-2 line-clamp-2">
             {{ item.title }}
@@ -32,13 +34,15 @@
             {{ item.author }} • {{ item.date }}
           </p>
         </div>
-      </a>
+      </Link>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+
+import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
   mostPopulars: { type: Array, default: () => [] },

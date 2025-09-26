@@ -6,15 +6,17 @@
         <div class="space-y-4">
           <!-- Trending News Pertama (Big Card) -->
           <div v-if="trendingNews.length > 0" class="relative rounded-lg overflow-hidden">
-            <a :href="`/news/${trendingNews[0].slug}`">
+            <Link :href="route('show.news', trendingNews[0].slug)">
               <img
                 :src="trendingNews[0].image"
                 class="w-full h-48 object-cover"
               />
               <div class="absolute inset-0 bg-black/40 p-4 flex flex-col justify-end">
-                <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded inline-block w-fit">
-                  {{ trendingNews[0].category }}
-                </span>
+                <Link :href="route('category.show', trendingNews[0].catSlug)">
+                  <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded inline-block w-fit">
+                    {{ trendingNews[0].category }}
+                  </span>
+                </Link>
       
                 <h4 class="text-white font-semibold text-base mt-2 line-clamp-2">
                   {{ trendingNews[0].title }}
@@ -23,7 +25,7 @@
                   {{ trendingNews[0].author }} • {{ trendingNews[0].date }}
                 </p>
               </div>
-            </a>
+            </Link>
           </div>
     
           <!-- Trending News Lainnya (List kecil) -->
@@ -31,12 +33,14 @@
             v-for="(news, i) in trendingNews.slice(1)"
             :key="i"
           >
-          <a :href="`/news/${news.slug}`" class="flex space-x-3 items-center">
+          <Link :href="route('show.news', news.slug)" class="flex space-x-3 items-center">
             <img :src="news.image" class="w-20 h-14 object-cover rounded" />
             <div>
-              <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
-                {{ news.category }}
-              </span>
+              <Link :href="route('category.show', news.catSlug)">
+                <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                  {{ news.category }}
+                </span>
+              </Link>
               <h4 class="text-sm font-semibold leading-tight line-clamp-2">
                 {{ news.title }}
               </h4>
@@ -44,7 +48,7 @@
                 {{ news.author }} • {{ news.date }}
               </p>
             </div>
-          </a>
+          </Link>
           </div>
         </div>
       </section>
@@ -53,12 +57,10 @@
 
 <script setup>
 
+import { Link } from '@inertiajs/vue3'
+
 const props = defineProps({
   trendingNews: { type: Array, default: () => [] },
 })
-// const trending = [
-//   { image: "https://picsum.photos/100/80?random=7", category: "Business", title: "Trending business news here...", author:"James Vedry", date:"Sept 03, 2045" },
-//   { image: "https://picsum.photos/100/80?random=8", category: "World", title: "World events making headlines...", author:"James Vedry", date:"Sept 03, 2045" },
-//   { image: "https://picsum.photos/100/80?random=9", category: "Tech", title: "Latest gadgets update...", author:"James Vedry", date:"Sept 03, 2045" },
-// ]
+
 </script>

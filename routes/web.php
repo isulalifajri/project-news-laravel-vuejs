@@ -3,8 +3,10 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FE\HomeController;
-use App\Http\Controllers\FE\CategoryController;
 use App\Http\Controllers\FE\PostController;
+use App\Http\Controllers\FE\ContactController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\FE\CategoryController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Home');
@@ -23,3 +25,8 @@ Route::get('/news/posts', [PostController::class, 'posts'])
     ->name('posts.news');
 
 Route::get('/show/{slug}', [PostController::class, 'showNews'])->name('show.news');
+
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+
+Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google.login');
+Route::get('auth/google/callback', [GoogleController::class, 'callback']);

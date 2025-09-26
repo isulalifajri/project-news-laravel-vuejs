@@ -44,18 +44,18 @@
           :key="i"
           class="relative rounded-lg overflow-hidden"
         >
-        <a :href="`/news/${card.slug}`">
+        <Link :href="route('show.news', card.slug)">
           <img :src="card.image" class="w-full h-[190px] object-cover" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-4 flex flex-col justify-end">
-            <a :href="route('category.show', card.catSlug)">
+            <Link :href="route('category.show', card.catSlug)">
               <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded mb-2 w-fit">
                 {{ card.category }}
               </span>
-            </a>
+            </Link>
             <h3 class="text-lg font-semibold text-white line-clamp-2">{{ card.title }}</h3>
             <p class="text-xs text-gray-200">by {{ card.author }} • {{ card.date }}</p>
           </div>
-        </a>
+        </Link>
         </div>
       </div>
     </div>

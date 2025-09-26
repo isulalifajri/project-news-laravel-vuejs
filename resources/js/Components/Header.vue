@@ -7,7 +7,7 @@
         <div class="flex items-center space-x-4">
           <span class="text-gray-400 hidden sm:inline">{{ formattedDate }}</span>
           <nav class="hidden sm:flex space-x-4 border-l border-gray-700 pl-4">
-            <Link href="/contact" class="hover:text-blue-400 transition">Contact</Link>
+            <Link :href="route('contact')" class="hover:text-blue-400 transition">Contact</Link>
             <Link href="/login" class="hover:text-blue-400 transition">Login</Link>
           </nav>
         </div>
@@ -169,7 +169,7 @@
             </ul>
           </li>
           <li>
-            <Link href="/contact" class="block py-3 px-4"
+            <Link :href="route('contact')" class="block py-3 px-4"
             :class="isActive('/contact') ? 'bg-blue-500 text-black' : 'hover:bg-blue-500 hover:text-black'">CONTACT</Link>
           </li>
         </ul>
@@ -221,7 +221,7 @@
                 </li>
               </ul>
             </div>
-            <Link href="/contact"  class="block px-2 py-2 hover:bg-blue-100 rounded"
+            <Link :href="route('contact')"  class="block px-2 py-2 hover:bg-blue-100 rounded"
             :class="isActive('/contact') ? 'bg-blue-500 text-white' : 'hover:text-blue-400'">CONTACT</Link>
           </div>
 

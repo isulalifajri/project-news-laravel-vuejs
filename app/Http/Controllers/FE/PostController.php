@@ -35,8 +35,9 @@ class PostController extends Controller
                 $query->where('is_featured', true)
                       ->orWhere('published_at', '>=', now()->subDays(7));
             })
-            ->orderByDesc('views')
             ->latest('published_at')
+            ->orderByDesc('is_featured')
+            ->orderByDesc('views')
             ->with(['category', 'backendUser'])
             ->take(5)
             ->get()
@@ -106,9 +107,52 @@ class PostController extends Controller
         $post = Post::where('slug', $slug)
             ->with(['category', 'backendUser', 'tags'])
             ->firstOrFail();
+        
+        $mostPopulars = Post::where('status', 'published')
+            ->orderByDesc('views')
+            ->with(['category', 'backendUser'])
+            ->take(5)
+            ->get()
+            ->shuffle()
+            ->map(fn($post) => $this->postService->transformPost($post));
+        
+        $trendingNews = Post::where('status', 'published')
+            ->where(function ($query) {
+                $query->where('is_featured', true)
+                      ->orWhere('published_at', '>=', now()->subDays(7));
+            })
+            ->latest('published_at')
+            ->orderByDesc('is_featured')
+            ->orderByDesc('views')
+            ->with(['category', 'backendUser'])
+            ->take(5)
+            ->get()
+            ->map(fn($post) => $this->postService->transformPost($post));
+
+        $companyProfile = CompanyProfile::first() ?? new CompanyProfile([
+            'name' => 'SKY NEWS',
+            'about' => '',
+            'logo' => 'https://picsum.photos/800/400?random=logo',
+        ]);
+
+        $footerContacts = FooterContact::where('is_active', true)
+            ->whereNull('icon')
+            ->get();
+
+        $sosmedIcons = FooterContact::where('is_active', true)
+            ->whereNotNull('icon')
+            ->get();
+
+        $categories = Category::all();
 
         return Inertia::render('Posts/show', [
-            'post' => $this->postService->transformPost($post)
+            'post' => $this->postService->transformPost($post),
+            'categories'     => $categories,
+            'trendingNews'   => $trendingNews,
+            'companyProfile' => $companyProfile,
+            'footerContacts' => $footerContacts,
+            'sosmedIcons'    => $sosmedIcons,
+            'mostPopulars'   => $mostPopulars,
         ]);
     }
 }

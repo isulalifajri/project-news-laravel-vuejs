@@ -21,6 +21,7 @@ class PostService
             'author'   => $post->backendUser?->name ?? 'Unknown',
             'date'     => $post->published_at?->format('M d, Y'),
             'slug'     => $post->slug,
+            'tags'     => $post->tags->pluck('name')->toArray(),
         ];
     }
 }

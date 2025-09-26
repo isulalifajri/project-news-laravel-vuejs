@@ -1,5 +1,11 @@
 <template>
-  <AppLayout>
+  <AppLayout
+    :company-profile="props.companyProfile"
+    :sosmed-icons="props.sosmedIcons"
+    :footer-contacts="props.footerContacts"
+    :categories="props.categories"
+    :most-populars="props.mostPopulars"
+    >
     <!-- Banner Iklan -->
     <div class="w-full mb-8 flex justify-center">
       <img
@@ -132,7 +138,8 @@
 
       <!-- Right Sidebar -->
       <div class="lg:col-span-1">
-        <TrendingNews />
+        <TrendingNews
+        :trending-News="props.trendingNews" />
       </div>
     </div>
   </AppLayout>
@@ -145,6 +152,12 @@ import { ref } from "vue"
 
 const props = defineProps({
   post: Object,
+  companyProfile: { type : Object, required: true },
+  sosmedIcons: { type: Array, default: () => [] },
+  footerContacts: { type: Array, default: () => [] },
+  mostPopulars: { type: Array, default: () => [] },
+  categories: { type: Array, default: () => [] },
+  trendingNews: { type: Array, default: () => [] },
 })
 
 // State interaksi

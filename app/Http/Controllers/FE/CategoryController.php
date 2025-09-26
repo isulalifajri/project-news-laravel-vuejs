@@ -12,7 +12,7 @@ use App\Services\PostService;
 
 class CategoryController extends Controller
 {
-    protected $postService;
+    protected PostService $postService;
 
     public function __construct(PostService $postService)
     {
@@ -22,7 +22,7 @@ class CategoryController extends Controller
     /**
      * Tampilkan halaman category dengan post
      */
-    public function show($slug)
+    public function show(string $slug)
     {
         $category = Category::where('slug', $slug)->firstOrFail();
 
@@ -39,36 +39,33 @@ class CategoryController extends Controller
         $categories = Category::all();
 
         // Latest News
-        $latestNews = $this->postService->transformCollection(
-            Post::where('status', 'published')
-                ->latest('published_at')
-                ->with(['category', 'backendUser'])
-                ->take(10)
-                ->get()
-                ->shuffle()
-        );
+        $latestNews = Post::where('status', 'published')
+            ->latest('published_at')
+            ->with(['category', 'backendUser'])
+            ->take(10)
+            ->get()
+            ->shuffle()
+            ->map(fn($post) => $this->postService->transformPost($post));
 
-        // Trending News
-        $trendingNews = $this->postService->transformCollection(
-            Post::where('status', 'published')
-                ->where(fn($q) => $q->where('is_featured', true)
-                                    ->orWhere('published_at', '>=', now()->subDays(7)))
-                ->orderByDesc('views')
-                ->latest('published_at')
-                ->with(['category', 'backendUser'])
-                ->take(5)
-                ->get()
-        );
+        // Trending News (samakan style)
+        $trendingNews = Post::where('status', 'published')
+            ->where(fn($q) => $q->where('is_featured', true)
+                                ->orWhere('published_at', '>=', now()->subDays(7)))
+            ->orderByDesc('views')
+            ->latest('published_at')
+            ->with(['category', 'backendUser'])
+            ->take(5)
+            ->get()
+            ->map(fn($post) => $this->postService->transformPost($post));
 
         // Most Popular
-        $mostPopulars = $this->postService->transformCollection(
-            Post::where('status', 'published')
-                ->orderByDesc('views')
-                ->with(['category', 'backendUser'])
-                ->take(5)
-                ->get()
-                ->shuffle()
-        );
+        $mostPopulars = Post::where('status', 'published')
+            ->orderByDesc('views')
+            ->with(['category', 'backendUser'])
+            ->take(5)
+            ->get()
+            ->shuffle()
+            ->map(fn($post) => $this->postService->transformPost($post));
 
         // Category Posts (pagination)
         $categoryPosts = Post::where('status', 'published')
@@ -94,7 +91,7 @@ class CategoryController extends Controller
     /**
      * JSON API untuk posts per category
      */
-    public function posts($slug)
+    public function posts(string $slug)
     {
         $posts = Post::where('status', 'published')
             ->whereHas('category', fn($q) => $q->where('slug', $slug))

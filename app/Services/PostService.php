@@ -6,7 +6,8 @@ use App\Models\Post;
 
 class PostService
 {
-    public function transform(Post $post): array
+    
+    public function transformPost(Post $post): array
     {
         return [
             'id'       => $post->id,
@@ -20,10 +21,5 @@ class PostService
             'date'     => $post->published_at?->format('M d, Y'),
             'slug'     => $post->slug,
         ];
-    }
-
-    public function transformCollection($posts)
-    {
-        return $posts->map(fn($post) => $this->transform($post));
     }
 }

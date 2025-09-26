@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\FE;
 
 use App\Models\Post;
-use App\Models\Category;
+use Inertia\Inertia;
 use App\Models\FooterContact;
 use App\Models\CompanyProfile;
-use Inertia\Inertia;
+use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Services\PostService;
 
 class HomeController extends Controller
 {
-    protected $postService;
+    protected PostService $postService;
 
     public function __construct(PostService $postService)
     {
@@ -34,66 +34,61 @@ class HomeController extends Controller
         $categories = Category::all();
 
         // Slides
-        $slides = $this->postService->transformCollection(
-            Post::where('status', 'published')
-                ->inRandomOrder()
-                ->take(5)
-                ->with(['category', 'backendUser'])
-                ->get()
-        );
+        $slides = Post::where('status', 'published')
+            ->inRandomOrder()
+            ->take(5)
+            ->with(['category', 'backendUser'])
+            ->get()
+            ->map(fn($post) => $this->postService->transformPost($post));
 
-        // Right Cards (2 post populer/random)
-        $rightCards = $this->postService->transformCollection(
-            Post::where('status', 'published')
-                ->orderByDesc('views')
-                ->take(5)
-                ->with(['category', 'backendUser'])
-                ->get()
-                ->shuffle()
-        );
+        // Right Cards
+        $rightCards = Post::where('status', 'published')
+            ->orderByDesc('views')
+            ->take(5)
+            ->with(['category', 'backendUser'])
+            ->get()
+            ->shuffle()
+            ->map(fn($post) => $this->postService->transformPost($post));
 
         // Trending News
-        $trendingNews = $this->postService->transformCollection(
-            Post::where('status', 'published')
-                ->where(fn($q) => $q->where('is_featured', true)
-                                    ->orWhere('published_at', '>=', now()->subDays(7)))
-                ->orderByDesc('views')
-                ->latest('published_at')
-                ->with(['category', 'backendUser'])
-                ->take(5)
-                ->get()
-        );
+        $trendingNews = Post::where('status', 'published')
+            ->where(fn($q) => $q->where('is_featured', true)
+                                ->orWhere('published_at', '>=', now()->subDays(7)))
+            ->orderByDesc('views')
+            ->latest('published_at')
+            ->with(['category', 'backendUser'])
+            ->take(5)
+            ->get()
+            ->map(fn($post) => $this->postService->transformPost($post));
 
         // Most Popular
-        $mostPopulars = $this->postService->transformCollection(
-            Post::where('status', 'published')
-                ->orderByDesc('views')
-                ->with(['category', 'backendUser'])
-                ->take(5)
-                ->get()
-                ->shuffle()
-        );
+        $mostPopulars = Post::where('status', 'published')
+            ->orderByDesc('views')
+            ->with(['category', 'backendUser'])
+            ->take(5)
+            ->get()
+            ->shuffle()
+            ->map(fn($post) => $this->postService->transformPost($post));
 
         // Latest News
-        $latestNews = $this->postService->transformCollection(
-            Post::where('status', 'published')
-                ->latest('published_at')
-                ->with(['category', 'backendUser'])
-                ->take(10)
-                ->get()
-                ->shuffle()
-        );
+        $latestNews = Post::where('status', 'published')
+            ->latest('published_at')
+            ->with(['category', 'backendUser'])
+            ->take(10)
+            ->get()
+            ->shuffle()
+            ->map(fn($post) => $this->postService->transformPost($post));
 
         return Inertia::render('Home', [
-            'slides'         => $slides,
-            'rightCards'     => $rightCards,
-            'trendingNews'   => $trendingNews,
-            'mostPopulars'   => $mostPopulars,
-            'latestNews'     => $latestNews,
-            'companyProfile' => $companyProfile,
-            'footerContacts' => $footerContacts,
-            'sosmedIcons'    => $sosmedIcons,
-            'categories'     => $categories,
+            'slides'          => $slides,
+            'rightCards'      => $rightCards,
+            'trendingNews'    => $trendingNews,
+            'mostPopulars'    => $mostPopulars,
+            'latestNews'      => $latestNews,
+            'companyProfile'  => $companyProfile,
+            'footerContacts'  => $footerContacts,
+            'sosmedIcons'     => $sosmedIcons,
+            'categories'      => $categories,
         ]);
     }
 }

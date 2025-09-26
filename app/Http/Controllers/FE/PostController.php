@@ -5,35 +5,21 @@ namespace App\Http\Controllers\FE;
 use App\Models\Post;
 use Inertia\Inertia;
 use App\Models\Category;
-use App\Models\FooterContact;
-use App\Models\CompanyProfile;
 use Illuminate\Http\Request;
+use App\Models\FooterContact;
+use App\Services\PostService;
+use App\Models\CompanyProfile;
 use App\Http\Controllers\Controller;
 
 class PostController extends Controller
 {
-    /**
-     * Transform post model ke array yang dibutuhkan frontend
-     */
-    private function transformPost(Post $post): array
-    {
-        return [
-            'id'       => $post->id,
-            'image'    => $post->thumbnail
-                            ? asset('storage/' . $post->thumbnail)
-                            : "https://picsum.photos/800/400?random=" . rand(1, 1000),
-            'category' => $post->category?->name ?? 'GENERAL',
-            'catSlug'  => $post->category?->slug ?? '#',
-            'title'    => $post->title,
-            'author'   => $post->backendUser?->name ?? 'Unknown',
-            'date'     => $post->published_at?->format('M d, Y'),
-            'slug'     => $post->slug,
-        ];
-    }
+    protected PostService $postService;
 
-    /**
-     * Halaman utama / index
-     */
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+    }
+    
     public function index()
     {
         $latestNews = Post::where('status', 'published')
@@ -42,7 +28,7 @@ class PostController extends Controller
             ->take(10)
             ->get()
             ->shuffle()
-            ->map(fn($post) => $this->transformPost($post));
+            ->map(fn($post) => $this->postService->transformPost($post));
 
         $trendingNews = Post::where('status', 'published')
             ->where(function ($query) {
@@ -54,7 +40,7 @@ class PostController extends Controller
             ->with(['category', 'backendUser'])
             ->take(5)
             ->get()
-            ->map(fn($post) => $this->transformPost($post));
+            ->map(fn($post) => $this->postService->transformPost($post));
 
         $mostPopulars = Post::where('status', 'published')
             ->orderByDesc('views')
@@ -62,7 +48,7 @@ class PostController extends Controller
             ->take(5)
             ->get()
             ->shuffle()
-            ->map(fn($post) => $this->transformPost($post));
+            ->map(fn($post) => $this->postService->transformPost($post));
 
         $companyProfile = CompanyProfile::first() ?? new CompanyProfile([
             'name' => 'SKY NEWS',
@@ -84,7 +70,7 @@ class PostController extends Controller
             ->latest('published_at')
             ->with(['category', 'backendUser'])
             ->paginate(6)
-            ->through(fn($post) => $this->transformPost($post));
+            ->through(fn($post) => $this->postService->transformPost($post));
 
         return Inertia::render('Posts/index', [
             'categories'     => $categories,
@@ -107,7 +93,7 @@ class PostController extends Controller
             ->latest('published_at')
             ->with(['category', 'backendUser'])
             ->paginate(6)
-            ->through(fn($post) => $this->transformPost($post));
+            ->through(fn($post) => $this->postService->transformPost($post));
 
         return response()->json($posts);
     }
@@ -122,7 +108,7 @@ class PostController extends Controller
             ->firstOrFail();
 
         return Inertia::render('Posts/Show', [
-            'post' => $this->transformPost($post)
+            'post' => $this->postService->transformPost($post)
         ]);
     }
 }

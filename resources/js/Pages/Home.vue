@@ -20,7 +20,7 @@
         >
           <SwiperSlide v-for="(slide, i) in slides" :key="i">
             <div class="relative">
-              <Link :href="`/news/${slide.slug}`">
+              <Link :href="route('show.news', slide.slug)">
                 <img :src="slide.image" class="w-full h-[400px] object-cover" />
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-6 flex flex-col justify-end">
                   <Link :href="route('category.show', slide.catSlug)">

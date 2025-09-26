@@ -20,7 +20,7 @@
 
         <!-- Meta -->
         <p class="text-sm text-gray-500 mb-5">
-          Oleh <span class="font-semibold">{{ post.author }}</span> •
+          By <span class="font-semibold">{{ post.author }}</span> •
           {{ post.date }}
         </p>
 
@@ -33,8 +33,7 @@
 
         <!-- Content -->
         <div class="prose max-w-none mb-10">
-          <p v-for="(paragraph, i) in post.content" :key="i" class="mb-4">
-            {{ paragraph }}
+          <p class="mb-4" v-html="post.content">
           </p>
         </div>
 
@@ -57,18 +56,18 @@
           <button
             class="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition"
           >
-            🔗 Bagikan
+            🔗 Share
           </button>
 
           <button
             @click="toggleFavorite"
             class="flex items-center gap-1 text-gray-600 hover:text-yellow-500 transition"
           >
-            ⭐ <span>{{ isFavorite ? "Favorit" : "Simpan" }}</span>
+            ⭐ <span>{{ isFavorite ? "Favorit" : "Save" }}</span>
           </button>
 
           <span class="ml-auto text-sm text-gray-500">
-            💬 {{ comments.length }} komentar
+            💬 {{ comments.length }} comments
           </span>
         </div>
 
@@ -85,7 +84,7 @@
 
         <!-- Comments Section -->
         <div class="border-t pt-6">
-          <h3 class="text-lg font-bold mb-4">Komentar ({{ comments.length }})</h3>
+          <h3 class="text-lg font-bold mb-4">Comment ({{ comments.length }})</h3>
 
           <!-- Input komentar -->
           <div class="flex items-start gap-3 mb-6">
@@ -144,18 +143,9 @@ import AppLayout from "@/Layouts/AppLayout.vue"
 import TrendingNews from "@/Pages/TrendingNews.vue"
 import { ref } from "vue"
 
-const post = {
-  title: "Mahfud MD Setuju Gabung Komite Reformasi Kepolisian Bentukan Prabowo",
-  author: "Nawir Arsyad Akbar",
-  date: "23/09/2025, 07:05 WIB",
-  image: "https://picsum.photos/800/400?random=70",
-  content: [
-    "JAKARTA, KOMPAS.com - Mantan Menteri Koordinator Bidang Politik, Hukum, dan Keamanan (Menko Polhukam) Mahfud MD menyatakan bersedia bergabung dengan Komite Reformasi Kepolisian yang akan dibentuk Presiden Prabowo Subianto.",
-    "Kesediaannya itu disampaikan langsung kepada Sekretaris Kabinet (Seskab) Teddy Indra Wijaya yang menemui Mahfud pada Selasa (16/9/2025).",
-    "Mahfud menegaskan bahwa dirinya akan ikut membantu dalam tim reformasi untuk memperbaiki kinerja kepolisian.",
-  ],
-  tags: ["kepolisian", "politik", "MahfudMD", "Prabowo", "reformasi"],
-}
+const props = defineProps({
+  post: Object,
+})
 
 // State interaksi
 const likes = ref(8)

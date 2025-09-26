@@ -15,19 +15,21 @@
             :key="i"
             class="border border-gray-300 rounded-lg overflow-hidden shadow-sm"
           >
-          <!-- <a :href="`/news/${news.slug}`"> -->
+          <Link :href="route('show.news', news.slug)">
             <img :src="news.image" class="w-full h-48 object-cover" />
             <div class="p-4">
-              <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
-                {{ news.category }}
-              </span>
+              <Link :href="route('category.show', news.catSlug)">
+                <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                  {{ news.category }}
+                </span>
+              </Link>
               <h3 class="mt-2 font-semibold text-lg line-clamp-2">{{ news.title }}</h3>
               <p class="text-sm text-gray-600 mt-1 line-clamp-3">{{ news.description }}</p>
               <p class="text-xs text-gray-400 mt-2">
                 By {{ news.author }} • {{ news.date }}
               </p>
             </div>
-          <!-- </a> -->
+          </Link>
           </div>
         </div>
 
@@ -37,18 +39,20 @@
             v-for="(news, i) in latestNews.slice(3, 7)"
             :key="i"
           >
-          <a :href="`/news/${news.slug}`" class="flex items-center space-x-3 border-b border-gray-300 pb-3">
+          <Link :href="route('show.news', news.slug)" class="flex items-center space-x-3 border-b border-gray-300 pb-3">
             <img :src="news.image" class="w-24 h-16 object-cover rounded" />
             <div>
-              <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
-                {{ news.category }}
-              </span>
+              <Link :href="route('category.show', news.catSlug)">
+                <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                  {{ news.category }}
+                </span>
+              </Link>
               <h4 class="text-sm font-semibold leading-snug mt-1 line-clamp-1">
                 {{ news.title }}
               </h4>
               <p class="text-xs text-gray-400">{{ news.date }}</p>
             </div>
-          </a>
+          </Link>
           </div>
         </div>
       </section>
@@ -63,6 +67,7 @@
 <script setup>
 
 import TrendingNews from "@/Pages/TrendingNews.vue"
+import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
   mostPopulars: { type: Array, default: () => [] },

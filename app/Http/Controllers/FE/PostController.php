@@ -104,10 +104,10 @@ class PostController extends Controller
     public function showNews($slug)
     {
         $post = Post::where('slug', $slug)
-            ->with(['category', 'backendUser'])
+            ->with(['category', 'backendUser', 'tags'])
             ->firstOrFail();
 
-        return Inertia::render('Posts/Show', [
+        return Inertia::render('Posts/show', [
             'post' => $this->postService->transformPost($post)
         ]);
     }

@@ -52,7 +52,7 @@
         <!-- Search + Login (desktop) -->
         <div class="hidden md:flex items-center space-x-4">
           <!-- Search Form -->
-          <form class="relative w-80">
+          <!-- <form class="relative w-80">
             <input
               type="text"
               placeholder="Search..."
@@ -61,9 +61,37 @@
             <button type="submit" class="absolute right-3 top-2.5 text-gray-500 hover:text-blue-500">
               <i class="fas fa-search"></i>
             </button>
+          </form> -->
+
+          <form class="relative w-80" @submit.prevent="goToSearch">
+            <input
+              type="text"
+              v-model="searchQuery"
+              @input="fetchSuggestions"
+              placeholder="Search..."
+              class="w-full border rounded-full px-4 py-2 pr-10 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+            />
+            <button type="submit" class="absolute right-3 top-2.5 text-gray-500 hover:text-blue-500">
+              <i class="fas fa-search"></i>
+            </button>
+
+            <!-- Suggestion dropdown -->
+            <ul
+              v-if="suggestions.length > 0"
+              class="absolute mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 z-50"
+            >
+              <li
+                v-for="s in suggestions"
+                :key="s.id"
+                class="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                @click="goToPost(s.slug)"
+              >
+                {{ s.title }}
+              </li>
+            </ul>
           </form>
 
-           <div class="relative" ref="dropdownRef">
+          <div class="relative" ref="dropdownRef">
             <!-- Icon User -->
             <button
               @click="userDropdown = !userDropdown"
@@ -319,7 +347,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link, usePage, router } from '@inertiajs/vue3'
 
 const page = usePage()
 const props = defineProps({
@@ -382,6 +410,36 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
+
+//search result
+const searchQuery = ref("");
+const suggestions = ref([]);
+
+async function fetchSuggestions() {
+  if (searchQuery.value.length < 2) {
+    suggestions.value = [];
+    return;
+  }
+
+  try {
+    const res = await fetch(`/search?q=${encodeURIComponent(searchQuery.value)}`);
+    suggestions.value = await res.json();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function goToPost(slug) {
+  suggestions.value = []
+  searchQuery.value = ""
+  router.visit(route("posts.show", slug)) // gunakan nama route
+}
+
+function goToSearch() {
+  if (!searchQuery.value) return
+  router.visit(route("search.page", { q: searchQuery.value }))
+}
+
 </script>
 
 <style>

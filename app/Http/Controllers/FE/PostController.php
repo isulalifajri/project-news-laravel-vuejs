@@ -155,4 +155,96 @@ class PostController extends Controller
             'mostPopulars'   => $mostPopulars,
         ]);
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->get('q');
+
+        $posts = Post::query()
+            ->where('title', 'like', "%{$query}%")
+            ->limit(5) // biar suggestion gak kebanyakan
+            ->get(['id','title','slug']);
+
+        return response()->json($posts);
+    }
+
+    public function searchPage(Request $request)
+    {
+        $query = $request->get('q');
+
+        $postsSearch = Post::where('status', 'published')
+            ->where(function($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%");
+                // ->orWhere('content', 'like', "%{$query}%");
+            })
+            ->latest('published_at')
+            ->with(['category', 'backendUser'])
+            ->paginate(6)
+            ->through(fn($post) => $this->postService->transformPost($post));
+
+        $categories = Category::all();
+
+        $latestNews = Post::where('status', 'published')
+            ->latest('published_at')
+            ->with(['category', 'backendUser'])
+            ->take(5)
+            ->get()
+            ->map(fn($post) => $this->postService->transformPost($post));
+
+        $trendingNews = Post::where('status', 'published')
+            ->where(function ($q) {
+                $q->where('is_featured', true)
+                ->orWhere('published_at', '>=', now()->subDays(7));
+            })
+            ->latest('published_at')
+            ->orderByDesc('is_featured')
+            ->orderByDesc('views')
+            ->with(['category', 'backendUser'])
+            ->take(5)
+            ->get()
+            ->map(fn($post) => $this->postService->transformPost($post));
+
+        $mostPopulars = Post::where('status', 'published')
+            ->orderByDesc('views')
+            ->with(['category', 'backendUser'])
+            ->take(5)
+            ->get()
+            ->map(fn($post) => $this->postService->transformPost($post));
+
+        $companyProfile = CompanyProfile::first() ?? new CompanyProfile([
+            'name' => 'SKY NEWS',
+            'about' => '',
+            'logo' => 'https://picsum.photos/800/400?random=logo',
+        ]);
+        $footerContacts = FooterContact::where('is_active', true)->whereNull('icon')->get();
+        $sosmedIcons = FooterContact::where('is_active', true)->whereNotNull('icon')->get();
+
+        return Inertia::render('SearchPage', [
+            'query'          => $query,
+            'postsSearch'    => $postsSearch,
+            'categories'     => $categories,
+            'latestNews'     => $latestNews,
+            'trendingNews'   => $trendingNews,
+            'companyProfile' => $companyProfile,
+            'footerContacts' => $footerContacts,
+            'sosmedIcons'    => $sosmedIcons,
+            'mostPopulars'   => $mostPopulars,
+        ]);
+    }
+
+    public function loadSearch(Request $request)
+    {
+        $query = $request->get('q');
+        $posts = Post::where('status', 'published')
+            ->where(function($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%");
+            })
+            ->latest('published_at')
+            ->with(['category', 'backendUser'])
+            ->paginate(6)
+            ->through(fn($post) => $this->postService->transformPost($post));
+
+        return response()->json($posts);
+    }
+
 }

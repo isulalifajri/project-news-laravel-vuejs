@@ -6,26 +6,29 @@
       :key="i"
       class="border border-gray-400 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition"
     >
-    <Link :href="route('show.news', news.slug)">
-      <img :src="news.image" class="w-full h-48 object-cover" />
-      <div class="p-4">
-        <Link :href="route('category.show', news.catSlug)">
-          <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
-            {{ news.category }}
-          </span>
-        </Link>
-        <h3 class="mt-2 font-semibold text-lg line-clamp-2">{{ news.title }}</h3>
-        <p class="text-xs text-gray-400 mt-2">
-          By {{ news.author }} • {{ news.date }}
-        </p>
-      </div>
-    </Link>
+      <Link :href="route('show.news', news.slug)">
+        <img :src="news.image" class="w-full h-48 object-cover" />
+        <div class="p-4">
+          <Link :href="route('category.show', news.catSlug)">
+            <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+              {{ news.category }}
+            </span>
+          </Link>
+          <!-- Highlight title jika ada query -->
+          <h3
+            class="mt-2 font-semibold text-lg line-clamp-2"
+            v-html="highlightTitle(news.title)"
+          ></h3>
+          <p class="text-xs text-gray-400 mt-2">
+            By {{ news.author }} • {{ news.date }}
+          </p>
+        </div>
+      </Link>
     </div>
   </div>
 </template>
 
 <script setup>
-
 import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
@@ -55,5 +58,21 @@ const props = defineProps({
       },
     ],
   },
+  query: {  // opsional, default kosong
+    type: String,
+    default: ''
+  }
 })
+
+// Fungsi highlight, aman jika query kosong
+const highlightTitle = (title) => {
+  if (!props.query) return title
+
+  // Escape karakter khusus untuk regex
+  const escapedQuery = props.query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const regex = new RegExp(`(${escapedQuery})`, 'gi')
+
+  // Ganti matching text dengan span highlight
+  return title.replace(regex, '<span class="bg-blue-100">$1</span>')
+}
 </script>

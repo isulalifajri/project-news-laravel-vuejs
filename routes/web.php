@@ -28,6 +28,12 @@ Route::get('/show/{slug}', [PostController::class, 'showNews'])->name('show.news
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 
+Route::get('/posts/{slug}', [PostController::class, 'showNews'])->name('posts.show');
+Route::get('/search', [PostController::class, 'search'])->name('search');
+Route::get('/search-page', [PostController::class, 'searchPage'])->name('search.page');
+Route::get('/search-pages', [PostController::class, 'loadSearch'])->name('search.page.load');
+
+
 Route::middleware('guest')->group(function () {
     Route::get('auth/google', [GoogleController::class, 'redirect'])->name('google.login');
     Route::get('auth/google/callback', [GoogleController::class, 'callback']);

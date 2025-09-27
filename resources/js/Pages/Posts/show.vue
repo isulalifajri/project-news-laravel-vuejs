@@ -95,8 +95,8 @@
           <!-- Input komentar -->
           <div class="flex items-start gap-3 mb-6">
             <img
-              v-if="props.auth.user"
-              :src="props.auth.user.avatar ?? 'https://i.pravatar.cc/40?img=2'"
+              v-if="user"
+              :src="user.avatar ?? 'https://i.pravatar.cc/40?img=2'"
               alt="User"
               class="w-10 h-10 rounded-full"
             />
@@ -141,6 +141,15 @@
 
                 <!-- Reply -->
                 <span class="cursor-pointer hover:underline">Balas</span>
+
+                <!-- Hapus -->
+                <button
+                  v-if="user && comment.user_id === user.id"
+                  @click="deleteComment(comment)"
+                  class="text-red-500 hover:underline ml-auto"
+                >
+                  Hapus
+                </button>
               </div>
             </div>
           </div>
@@ -158,19 +167,27 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue"
 import TrendingNews from "@/Pages/TrendingNews.vue"
-import { ref } from "vue"
+import { ref, computed } from "vue"
+import { usePage } from "@inertiajs/vue3"
 import axios from "axios"
+
+axios.defaults.withCredentials = true
+axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest"
+axios.defaults.headers.common["X-CSRF-TOKEN"] =
+  document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+
+const page = usePage()
+const user = computed(() => page.props.auth?.user ?? null)
 
 const props = defineProps({
   post: Object,
-  comments: { type: Array, default: () => [] }, // dari backend
+  comments: { type: Array, default: () => [] },
   companyProfile: { type: Object, required: true },
   sosmedIcons: { type: Array, default: () => [] },
   footerContacts: { type: Array, default: () => [] },
   mostPopulars: { type: Array, default: () => [] },
   categories: { type: Array, default: () => [] },
   trendingNews: { type: Array, default: () => [] },
-  auth: { type: Object, default: () => ({ user: null }) }, // auth dari Inertia::share
 })
 
 // state interaksi
@@ -180,14 +197,13 @@ function toggleFavorite() {
   isFavorite.value = !isFavorite.value
 }
 
-// komentar (isi dari props backend)
+// komentar
 const comments = ref(props.comments)
 const newComment = ref("")
 
 // add comment
 async function addComment() {
-  if (!props.auth.user) {
-    // kalau belum login → arahkan ke google.login
+  if (!user.value) {
     window.location.href = route("google.login")
     return
   }
@@ -201,7 +217,6 @@ async function addComment() {
     const res = await axios.post(route("comments.store", { post: props.post.id }), {
       content: newComment.value,
     })
-
     comments.value.unshift(res.data.comment)
     newComment.value = ""
   } catch (err) {
@@ -209,17 +224,15 @@ async function addComment() {
   }
 }
 
-// toggle like untuk komentar
+// toggle like
 async function toggleLike(comment) {
-  if (!props.auth.user) {
+  if (!user.value) {
     window.location.href = route("google.login")
     return
   }
 
   try {
-    const res = await axios.post(
-      route("comments.toggle-like", { comment: comment.id })
-    )
+    const res = await axios.post(route("comments.toggle-like", { comment: comment.id }))
     comment.is_liked = res.data.is_liked
     comment.likes_count = res.data.likes_count
   } catch (err) {
@@ -227,16 +240,13 @@ async function toggleLike(comment) {
   }
 }
 
-const sharePost = () => {
-  const shareData = {
-    title: props.post.title,
-    url: window.location.href,
-  }
-
-  if (navigator.share) {
-    navigator.share(shareData)
-  } else {
-    alert(`Bagikan artikel ini secara manual: ${window.location.href}`)
+// delete comment
+async function deleteComment(comment) {
+  try {
+   await axios.delete(route("comments.destroy", { id: comment.id }))
+    comments.value = comments.value.filter(c => c.id !== comment.id)
+  } catch (err) {
+    console.error("Gagal hapus komentar", err)
   }
 }
 </script>

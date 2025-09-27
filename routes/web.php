@@ -9,9 +9,6 @@ use App\Http\Controllers\FE\ContactController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\FE\CategoryController;
 
-// Route::get('/', function () {
-//     return Inertia::render('Home');
-// })->name('home');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/category/{slug}', [CategoryController::class, 'show'])
@@ -45,8 +42,11 @@ Route::middleware('auth')->group(function () {
     [CommentController::class, 'store'])->name('comments.store');
     Route::post('/comments/{comment}/toggle-like', 
     [CommentController::class, 'toggleLike'])->name('comments.toggle-like');
-
+    Route::delete('/comments/{id}', 
+    [CommentController::class, 'destroy'])->name('comments.destroy');
+    
+    
     Route::post('/logout', [GoogleController::class, 'logout'])
-        ->name('logout');
+    ->name('logout');
 });
 

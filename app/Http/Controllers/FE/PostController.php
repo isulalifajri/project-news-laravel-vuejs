@@ -104,9 +104,6 @@ class PostController extends Controller
      */
     public function showNews($slug)
     {
-        // $post = Post::where('slug', $slug)
-        //     ->with(['category', 'backendUser', 'tags','comments'])
-        //     ->firstOrFail();
         $post = Post::where('slug', $slug)
             ->with(['category', 'backendUser', 'tags', 'comments.likes'])
             ->firstOrFail();
@@ -117,6 +114,7 @@ class PostController extends Controller
                 'author' => $comment->user->name ?? 'Guest',
                 'content' => $comment->content,
                 'avatar' => $comment->user->avatar ?? null,
+                'user_id' => $comment->user_id, // 👈 tambahkan ini
                 'likes_count' => $comment->likes->count(),
                 'liked_by_me' => auth()->check()
                     ? $comment->likes->contains('user_id', auth()->id())

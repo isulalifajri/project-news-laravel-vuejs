@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\FE;
 
 use App\Models\Post;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -27,6 +28,7 @@ class CommentController extends Controller
                 'id' => $comment->id,
                 'author' => $comment->user->name,
                 'avatar' => $comment->user->avatar,
+                'user_id' => $comment->user->id,
                 'content' => $comment->content,
                 'likes_count' => 0,
                 'is_liked' => false,
@@ -52,4 +54,13 @@ class CommentController extends Controller
             'likes_count' => $comment->likes()->count(),
         ]);
     }
+
+    public function destroy($id)
+    {
+        $comment = Comment::findOrFail($id);
+        $comment->delete();
+        return response()->json(['success' => true]);
+    }
+
+
 }

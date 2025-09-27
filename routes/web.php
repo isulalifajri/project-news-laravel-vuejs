@@ -42,8 +42,12 @@ Route::middleware('auth')->group(function () {
     [CommentController::class, 'store'])->name('comments.store');
     Route::post('/comments/{comment}/toggle-like', 
     [CommentController::class, 'toggleLike'])->name('comments.toggle-like');
+    Route::post('/comments/{comment}/reply', [CommentController::class, 'reply'])
+    ->name('comments.reply');
     Route::delete('/comments/{id}', 
     [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::delete('/comments/reply/{reply}', 
+    [CommentController::class, 'destroyReply'])->name('comments.reply.destroy');
     
     
     Route::post('/logout', [GoogleController::class, 'logout'])

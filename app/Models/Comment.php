@@ -9,7 +9,7 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['post_id','user_id','content'];
+    protected $fillable = ['post_id','user_id','content','parent_id'];
 
     public function post()
     {
@@ -25,5 +25,16 @@ class Comment extends Model
     {
         return $this->hasMany(CommentLike::class);
     }
+
+    // komentar utama bisa punya banyak balasan
+    public function replies() {
+        return $this->hasMany(Comment::class, 'parent_id');
+    }
+
+    // balasan tahu komentar induknya
+    public function parent() {
+        return $this->belongsTo(Comment::class, 'parent_id');
+    }
+
 
 }

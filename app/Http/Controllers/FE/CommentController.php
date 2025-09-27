@@ -55,6 +55,28 @@ class CommentController extends Controller
         ]);
     }
 
+    public function reply(Request $request, Comment $comment)
+    {
+        $newReply = $comment->replies()->create([
+            'content' => $request->content,
+            'user_id' => auth()->id(),
+            'post_id' => $comment->post_id,
+        ]);
+
+        return response()->json([
+            'reply' => [
+                'id' => $newReply->id,
+                'author' => $newReply->user->name,
+                'content' => $newReply->content,
+                'avatar' => $newReply->user->avatar,
+                'user_id' => $newReply->user_id,
+                'likes_count' => 0,
+                'liked_by_me' => false,
+            ]
+        ]);
+    }
+
+
     public function destroy($id)
     {
         $comment = Comment::findOrFail($id);
@@ -62,5 +84,12 @@ class CommentController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function destroyReply($replyId)
+    {
+        $reply = Comment::findOrFail($replyId);
+        $reply->delete();
+
+        return response()->json(['message' => 'Balasan berhasil dihapus']);
+    }
 
 }

@@ -119,6 +119,15 @@ class PostController extends Controller
                 'liked_by_me' => auth()->check()
                     ? $comment->likes->contains('user_id', auth()->id())
                     : false,
+                'replies' => $comment->replies->map(fn($reply) => [
+                    'id' => $reply->id,
+                    'author' => $reply->user->name ?? 'Guest',
+                    'content' => $reply->content,
+                    'avatar' => $reply->user->avatar ?? null,
+                    'user_id' => $reply->user_id,
+                    'likes_count' => $reply->likes->count(),
+                    'liked_by_me' => auth()->check() ? $reply->likes->contains('user_id', auth()->id()) : false,
+                ]),
             ];
         });
 

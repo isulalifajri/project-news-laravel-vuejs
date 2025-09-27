@@ -120,13 +120,62 @@
             <div class="flex-1 bg-gray-100 rounded-lg p-3">
               <p class="text-sm font-semibold">{{ comment.author }}</p>
               <p class="text-sm text-gray-700">{{ comment.content }}</p>
-              <div class="flex gap-4 text-xs text-gray-500 mt-1">
-                <button @click="toggleLike(comment)" class="flex items-center gap-1 cursor-pointer" :class="comment.liked_by_me ? 'text-blue-600' : 'text-gray-500'">
+              <div class="mt-1 text-xs text-gray-500">
+              <!-- Like & Reply bar -->
+              <div class="flex gap-4 items-center">
+                <button @click="toggleLike(comment)"
+                        class="flex items-center gap-1 cursor-pointer"
+                        :class="comment.liked_by_me ? 'text-blue-600' : 'text-gray-500'">
                   <i class="fas fa-thumbs-up"></i> {{ comment.likes_count }}
                 </button>
-                <span class="cursor-pointer hover:underline">Balas</span>
-                <button v-if="user && comment.user_id === user.id" @click="deleteComment(comment)" class="text-gray-500 hover:underline ml-auto cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+
+                <span @click="comment.showReplyInput = !comment.showReplyInput"
+                      class="cursor-pointer hover:underline text-gray-600">
+                  Balas
+                </span>
+
+                <button v-if="user && comment.user_id === user.id"
+                        @click="deleteComment(comment)"
+                        class="ml-auto text-gray-500 hover:underline cursor-pointer">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
               </div>
+
+              <!-- Reply input -->
+              <div v-if="comment.showReplyInput" class="mt-2">
+                <textarea v-model="comment.newReply"
+                          class="border rounded-lg p-1 w-full"
+                          rows="2"
+                          placeholder="Tulis balasan..."></textarea>
+                <div class="flex gap-2 mt-1">
+                  <button @click="addReply(comment)"
+                          class="bg-yellow-500 text-white px-3 py-1 rounded-lg cursor-pointer">
+                    Kirim
+                  </button>
+                  <button @click="cancelReply(comment)"
+                          class="bg-gray-300 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-400 cursor-pointer">
+                    Batal
+                  </button>
+                </div>
+              </div>
+
+              <!-- Replies -->
+              <div v-for="reply in comment.replies" :key="reply.id" class="mt-2 ml-2 border-l border-gray-300 pl-4 border-b pb-2">
+                <div class="flex gap-2">
+                  <img :src="reply.avatar ?? 'https://i.pravatar.cc/40?img=5'" alt="User" class="w-5 h-5 rounded-full" />
+                  <div class="grid">
+                    <p class="text-sm font-semibold">{{ reply.author }}</p>
+                    <p class="text-sm text-gray-700">{{ reply.content }}</p>
+                  </div>
+                </div>
+                <button v-if="user && reply.user_id === user.id" 
+                  @click="deleteReply(comment, reply)" 
+                  class="text-gray-500 hover:underline text-xs cursor-pointer">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
             </div>
           </div>
 
@@ -239,4 +288,51 @@ async function deleteComment(comment) {
     console.error("Gagal hapus komentar", err)
   }
 }
+
+
+// add reply
+async function addReply(comment) {
+  if (!user.value) {
+    window.location.href = route("google.login");
+    return;
+  }
+
+  if (!comment.newReply || comment.newReply.trim() === "") {
+    alert("Tulis balasan anda.");
+    return;
+  }
+
+  try {
+    const res = await axios.post(route("comments.reply", { comment: comment.id }), {
+      content: comment.newReply,
+    });
+    if (!comment.replies) comment.replies = [];
+    comment.replies.push(res.data.reply);
+    comment.newReply = "";
+    comment.showReplyInput = false;
+  } catch (err) {
+    console.error("Gagal kirim balasan", err);
+  }
+}
+
+// cancel reply
+function cancelReply(comment) {
+  comment.newReply = "";         // kosongkan teks
+  comment.showReplyInput = false; // sembunyikan input
+}
+
+// delete reply
+async function deleteReply(comment, reply) {
+  try {
+    // Panggil endpoint API kalau ada
+    await axios.delete(route("comments.reply.destroy", { id: reply.id }));
+
+    // Hapus reply dari array lokal
+    comment.replies = comment.replies.filter(r => r.id !== reply.id);
+  } catch (err) {
+    console.error("Gagal hapus balasan", err);
+  }
+}
+
+
 </script>

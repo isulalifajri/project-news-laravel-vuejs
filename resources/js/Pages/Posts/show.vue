@@ -45,37 +45,36 @@
 
         <!-- Action Bar -->
        <div class="border border-blue-300 bg-gray-50 rounded-lg shadow-sm flex items-center gap-6 px-4 py-3 mb-6">
-          <button
-            @click="likes++"
-            class="flex items-center gap-1 text-gray-600 hover:text-yellow-600 transition"
-          >
-            👍 <span>{{ likes }}</span>
-          </button>
+        <!-- Like -->
+        <button
+          @click="likes++"
+          class="flex items-center gap-1 text-gray-600 hover:text-yellow-600 transition"
+        >
+          <i class="fas fa-thumbs-up"></i> <span>{{ likes }}</span>
+        </button>
 
-          <button
-            @click="dislikes++"
-            class="flex items-center gap-1 text-gray-600 hover:text-red-600 transition"
-          >
-            👎 <span>{{ dislikes }}</span>
-          </button>
+        <!-- Share -->
+        <button
+          @click="sharePost"
+          class="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition cursor-pointer"
+        >
+          <i class="fas fa-share"></i> Share
+        </button>
 
-          <button
-            class="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition"
-          >
-            🔗 Share
-          </button>
+        <!-- Save / Favorite -->
+        <button
+          @click="toggleFavorite"
+          class="flex items-center gap-1 text-gray-600 hover:text-yellow-500 transition"
+        >
+          <i class="fas fa-star"></i> <span>{{ isFavorite ? "Favorit" : "Save" }}</span>
+        </button>
 
-          <button
-            @click="toggleFavorite"
-            class="flex items-center gap-1 text-gray-600 hover:text-yellow-500 transition"
-          >
-            ⭐ <span>{{ isFavorite ? "Favorit" : "Save" }}</span>
-          </button>
+        <!-- Comments -->
+        <span class="ml-auto flex items-center gap-1 text-sm text-gray-500">
+          <i class="fas fa-comment"></i> {{ comments.length }} comments
+        </span>
+      </div>
 
-          <span class="ml-auto text-sm text-gray-500">
-            💬 {{ comments.length }} comments
-          </span>
-        </div>
 
         <!-- Tags -->
         <div class="flex flex-wrap gap-2 mb-10">
@@ -128,9 +127,14 @@
               <p class="text-sm font-semibold">{{ comment.author }}</p>
               <p class="text-sm text-gray-700">{{ comment.text }}</p>
               <div class="flex gap-4 text-xs text-gray-500 mt-1">
-                <span>👍 {{ comment.likes }}</span>
+                <!-- Like -->
+                <span class="flex items-center gap-1">
+                  <i class="fas fa-thumbs-up"></i> {{ comment.likes }}
+                </span>
+                <!-- Reply -->
                 <span class="cursor-pointer hover:underline">Balas</span>
               </div>
+
             </div>
           </div>
         </div>
@@ -162,7 +166,6 @@ const props = defineProps({
 
 // State interaksi
 const likes = ref(8)
-const dislikes = ref(2)
 const isFavorite = ref(false)
 
 function toggleFavorite() {
@@ -197,4 +200,22 @@ function addComment() {
   })
   newComment.value = ""
 }
+
+const sharePost = () => {
+  const shareData = {
+    title: props.post.title,        // otomatis ambil title artikel
+    text: "Cek artikel ini!",       // bisa diganti sesuai kebutuhan
+    url: window.location.href       // otomatis URL halaman ini
+  }
+
+  if (navigator.share) {
+    navigator.share(shareData)
+      .then(() => console.log('Artikel berhasil dibagikan'))
+      .catch(err => console.error('Gagal share:', err))
+  } else {
+    // fallback manual: tampil alert atau copy link
+    alert(`Bagikan artikel ini secara manual: ${window.location.href}`)
+  }
+}
+
 </script>

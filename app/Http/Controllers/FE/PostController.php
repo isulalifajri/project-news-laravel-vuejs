@@ -104,9 +104,25 @@ class PostController extends Controller
      */
     public function showNews($slug)
     {
+        // $post = Post::where('slug', $slug)
+        //     ->with(['category', 'backendUser', 'tags','comments'])
+        //     ->firstOrFail();
         $post = Post::where('slug', $slug)
-            ->with(['category', 'backendUser', 'tags'])
+            ->with(['category', 'backendUser', 'tags', 'comments.likes'])
             ->firstOrFail();
+
+        $comments = $post->comments->map(function ($comment) {
+            return [
+                'id' => $comment->id,
+                'author' => $comment->user->name ?? 'Guest',
+                'content' => $comment->content,
+                'avatar' => $comment->user->avatar ?? null,
+                'likes_count' => $comment->likes->count(),
+                'liked_by_me' => auth()->check()
+                    ? $comment->likes->contains('user_id', auth()->id())
+                    : false,
+            ];
+        });
 
         $mostPopulars = Post::where('status', 'published')
             ->orderByDesc('views')
@@ -147,6 +163,7 @@ class PostController extends Controller
 
         return Inertia::render('Posts/show', [
             'post' => $this->postService->transformPost($post),
+            'comments' => $comments,
             'categories'     => $categories,
             'trendingNews'   => $trendingNews,
             'companyProfile' => $companyProfile,

@@ -5,7 +5,7 @@
     :footer-contacts="props.footerContacts"
     :categories="props.categories"
     :most-populars="props.mostPopulars"
-    >
+  >
     <!-- Banner Iklan -->
     <div class="w-full mb-8 flex justify-center">
       <img
@@ -21,65 +21,64 @@
       <div class="lg:col-span-2">
         <!-- Title -->
         <h1 class="text-2xl md:text-3xl font-bold mb-3">
-          {{ post.title }}
+          {{ props.post.title }}
         </h1>
 
         <!-- Meta -->
         <p class="text-sm text-gray-500 mb-5">
-          By <span class="font-semibold">{{ post.author }}</span> •
-          {{ post.date }}
+          By <span class="font-semibold">{{ props.post.author }}</span> •
+          {{ props.post.date }}
         </p>
 
         <!-- Featured Image -->
         <img
-          :src="post.image"
+          :src="props.post.image"
           alt="featured image"
           class="w-full rounded-lg shadow mb-6"
         />
 
         <!-- Content -->
-        <div class="prose max-w-none mb-10">
-          <p class="mb-4" v-html="post.content">
-          </p>
-        </div>
+        <div class="prose max-w-none mb-10" v-html="props.post.content"></div>
 
         <!-- Action Bar -->
-       <div class="border border-blue-300 bg-gray-50 rounded-lg shadow-sm flex items-center gap-6 px-4 py-3 mb-6">
-        <!-- Like -->
-        <button
-          @click="likes++"
-          class="flex items-center gap-1 text-gray-600 hover:text-yellow-600 transition"
+        <div
+          class="border border-blue-300 bg-gray-50 rounded-lg shadow-sm flex items-center gap-6 px-4 py-3 mb-6"
         >
-          <i class="fas fa-thumbs-up"></i> <span>{{ likes }}</span>
-        </button>
+          <!-- Like -->
+          <button
+            @click="likes++"
+            class="flex items-center gap-1 text-gray-600 hover:text-yellow-600 transition"
+          >
+            <i class="fas fa-thumbs-up"></i> <span>{{ likes }}</span>
+          </button>
 
-        <!-- Share -->
-        <button
-          @click="sharePost"
-          class="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition cursor-pointer"
-        >
-          <i class="fas fa-share"></i> Share
-        </button>
+          <!-- Share -->
+          <button
+            @click="sharePost"
+            class="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition cursor-pointer"
+          >
+            <i class="fas fa-share"></i> Share
+          </button>
 
-        <!-- Save / Favorite -->
-        <button
-          @click="toggleFavorite"
-          class="flex items-center gap-1 text-gray-600 hover:text-yellow-500 transition"
-        >
-          <i class="fas fa-star"></i> <span>{{ isFavorite ? "Favorit" : "Save" }}</span>
-        </button>
+          <!-- Save / Favorite -->
+          <button
+            @click="toggleFavorite"
+            class="flex items-center gap-1 text-gray-600 hover:text-yellow-500 transition"
+          >
+            <i class="fas fa-star"></i>
+            <span>{{ isFavorite ? 'Favorit' : 'Save' }}</span>
+          </button>
 
-        <!-- Comments -->
-        <span class="ml-auto flex items-center gap-1 text-sm text-gray-500">
-          <i class="fas fa-comment"></i> {{ comments.length }} comments
-        </span>
-      </div>
-
+          <!-- Comments -->
+          <span class="ml-auto flex items-center gap-1 text-sm text-gray-500">
+            <i class="fas fa-comment"></i> {{ comments.length }} comments
+          </span>
+        </div>
 
         <!-- Tags -->
         <div class="flex flex-wrap gap-2 mb-10">
           <span
-            v-for="(tag, i) in post.tags"
+            v-for="(tag, i) in props.post.tags"
             :key="i"
             class="bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded-full hover:bg-yellow-400 hover:text-black cursor-pointer"
           >
@@ -89,12 +88,15 @@
 
         <!-- Comments Section -->
         <div class="border-t pt-6">
-          <h3 class="text-lg font-bold mb-4">Comment ({{ comments.length }})</h3>
+          <h3 class="text-lg font-bold mb-4">
+            Comment ({{ comments.length }})
+          </h3>
 
           <!-- Input komentar -->
           <div class="flex items-start gap-3 mb-6">
             <img
-              src="https://i.pravatar.cc/40?img=2"
+              v-if="props.auth.user"
+              :src="props.auth.user.avatar ?? 'https://i.pravatar.cc/40?img=2'"
               alt="User"
               class="w-10 h-10 rounded-full"
             />
@@ -114,27 +116,32 @@
 
           <!-- List komentar -->
           <div
-            v-for="(comment, i) in comments"
-            :key="i"
+            v-for="comment in comments"
+            :key="comment.id"
             class="flex items-start gap-3 mb-4"
           >
             <img
-              :src="comment.avatar"
+              :src="comment.avatar ?? 'https://i.pravatar.cc/40?img=5'"
               alt="User"
               class="w-10 h-10 rounded-full"
             />
             <div class="flex-1 bg-gray-100 rounded-lg p-3">
               <p class="text-sm font-semibold">{{ comment.author }}</p>
-              <p class="text-sm text-gray-700">{{ comment.text }}</p>
+              <p class="text-sm text-gray-700">{{ comment.content }}</p>
               <div class="flex gap-4 text-xs text-gray-500 mt-1">
                 <!-- Like -->
-                <span class="flex items-center gap-1">
-                  <i class="fas fa-thumbs-up"></i> {{ comment.likes }}
-                </span>
+                <button
+                  @click="toggleLike(comment)"
+                  class="flex items-center gap-1 cursor-pointer"
+                  :class="comment.is_liked ? 'text-blue-600' : 'text-gray-500'"
+                >
+                  <i class="fas fa-thumbs-up"></i>
+                  {{ comment.likes_count }}
+                </button>
+
                 <!-- Reply -->
                 <span class="cursor-pointer hover:underline">Balas</span>
               </div>
-
             </div>
           </div>
         </div>
@@ -142,8 +149,7 @@
 
       <!-- Right Sidebar -->
       <div class="lg:col-span-1">
-        <TrendingNews
-        :trending-News="props.trendingNews" />
+        <TrendingNews :trending-News="props.trendingNews" />
       </div>
     </div>
   </AppLayout>
@@ -153,69 +159,84 @@
 import AppLayout from "@/Layouts/AppLayout.vue"
 import TrendingNews from "@/Pages/TrendingNews.vue"
 import { ref } from "vue"
+import axios from "axios"
 
 const props = defineProps({
   post: Object,
-  companyProfile: { type : Object, required: true },
+  comments: { type: Array, default: () => [] }, // dari backend
+  companyProfile: { type: Object, required: true },
   sosmedIcons: { type: Array, default: () => [] },
   footerContacts: { type: Array, default: () => [] },
   mostPopulars: { type: Array, default: () => [] },
   categories: { type: Array, default: () => [] },
   trendingNews: { type: Array, default: () => [] },
+  auth: { type: Object, default: () => ({ user: null }) }, // auth dari Inertia::share
 })
 
-// State interaksi
+// state interaksi
 const likes = ref(8)
 const isFavorite = ref(false)
-
 function toggleFavorite() {
   isFavorite.value = !isFavorite.value
 }
 
-// Komentar
-const comments = ref([
-  {
-    author: "Budi",
-    text: "Artikel yang sangat menarik 👍",
-    avatar: "https://i.pravatar.cc/40?img=5",
-    likes: 8,
-  },
-  {
-    author: "Siti",
-    text: "Semoga reformasi berjalan lancar!",
-    avatar: "https://i.pravatar.cc/40?img=6",
-    likes: 5,
-  },
-])
-
+// komentar (isi dari props backend)
+const comments = ref(props.comments)
 const newComment = ref("")
 
-function addComment() {
-  if (newComment.value.trim() === "") return
-  comments.value.push({
-    author: "Guest",
-    text: newComment.value,
-    avatar: "https://i.pravatar.cc/40?img=7",
-    likes: 0,
-  })
-  newComment.value = ""
+// add comment
+async function addComment() {
+  if (!props.auth.user) {
+    // kalau belum login → arahkan ke google.login
+    window.location.href = route("google.login")
+    return
+  }
+
+  if (newComment.value.trim().length < 1) {
+    alert("Tulis Komentar anda.")
+    return
+  }
+
+  try {
+    const res = await axios.post(route("comments.store", { post: props.post.id }), {
+      content: newComment.value,
+    })
+
+    comments.value.unshift(res.data.comment)
+    newComment.value = ""
+  } catch (err) {
+    console.error("Gagal kirim komentar", err)
+  }
+}
+
+// toggle like untuk komentar
+async function toggleLike(comment) {
+  if (!props.auth.user) {
+    window.location.href = route("google.login")
+    return
+  }
+
+  try {
+    const res = await axios.post(
+      route("comments.toggle-like", { comment: comment.id })
+    )
+    comment.is_liked = res.data.is_liked
+    comment.likes_count = res.data.likes_count
+  } catch (err) {
+    console.error("Gagal toggle like", err)
+  }
 }
 
 const sharePost = () => {
   const shareData = {
-    title: props.post.title,        // otomatis ambil title artikel
-    text: "Cek artikel ini!",       // bisa diganti sesuai kebutuhan
-    url: window.location.href       // otomatis URL halaman ini
+    title: props.post.title,
+    url: window.location.href,
   }
 
   if (navigator.share) {
     navigator.share(shareData)
-      .then(() => console.log('Artikel berhasil dibagikan'))
-      .catch(err => console.error('Gagal share:', err))
   } else {
-    // fallback manual: tampil alert atau copy link
     alert(`Bagikan artikel ini secara manual: ${window.location.href}`)
   }
 }
-
 </script>

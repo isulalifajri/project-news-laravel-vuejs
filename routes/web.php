@@ -2,6 +2,7 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FE\CommentController;
 use App\Http\Controllers\FE\HomeController;
 use App\Http\Controllers\FE\PostController;
 use App\Http\Controllers\FE\ContactController;
@@ -40,6 +41,11 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::post('/posts/{post}/comments', 
+    [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/comments/{comment}/toggle-like', 
+    [CommentController::class, 'toggleLike'])->name('comments.toggle-like');
+
     Route::post('/logout', [GoogleController::class, 'logout'])
         ->name('logout');
 });

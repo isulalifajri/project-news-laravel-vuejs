@@ -52,17 +52,6 @@
         <!-- Search + Login (desktop) -->
         <div class="hidden md:flex items-center space-x-4">
           <!-- Search Form -->
-          <!-- <form class="relative w-80">
-            <input
-              type="text"
-              placeholder="Search..."
-              class="w-full border rounded-full px-4 py-2 pr-10 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-            />
-            <button type="submit" class="absolute right-3 top-2.5 text-gray-500 hover:text-blue-500">
-              <i class="fas fa-search"></i>
-            </button>
-          </form> -->
-
           <form class="relative w-80" @submit.prevent="goToSearch">
             <input
               type="text"
@@ -238,15 +227,32 @@
         <div class="px-2 py-3 space-y-5 text-white font-medium">
 
           <!-- 🔍 Search bar (paling atas) -->
-          <form class="relative px-2">
+          <form class="relative w-80" @submit.prevent="goToSearch">
             <input
               type="text"
+              v-model="searchQuery"
+              @input="fetchSuggestions"
               placeholder="Search..."
-              class="w-full border rounded-full px-4 py-2 pr-10 text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+              class="w-full border rounded-full px-4 py-2 pr-10 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
             />
-            <button type="submit" class="absolute right-5 top-2.5 text-gray-500 hover:text-blue-500">
+            <button type="submit" class="absolute right-3 top-2.5 text-gray-500 hover:text-blue-500">
               <i class="fas fa-search"></i>
             </button>
+
+            <!-- Suggestion dropdown -->
+            <ul
+              v-if="suggestions.length > 0"
+              class="absolute mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 text-gray-600"
+            >
+              <li
+                v-for="s in suggestions"
+                :key="s.id"
+                class="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                @click="goToPost(s.slug)"
+              >
+                {{ s.title }}
+              </li>
+            </ul>
           </form>
 
           <!--  Navigasi utama -->

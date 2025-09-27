@@ -108,51 +108,33 @@
             ></textarea>
             <button
               @click="addComment"
-              class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+              class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 cursor-pointer"
             >
               Kirim
             </button>
           </div>
 
           <!-- List komentar -->
-          <div
-            v-for="comment in comments"
-            :key="comment.id"
-            class="flex items-start gap-3 mb-4"
-          >
-            <img
-              :src="comment.avatar ?? 'https://i.pravatar.cc/40?img=5'"
-              alt="User"
-              class="w-10 h-10 rounded-full"
-            />
+          <div v-for="comment in visibleComments" :key="comment.id" class="flex items-start gap-3 mb-4">
+            <img :src="comment.avatar ?? 'https://i.pravatar.cc/40?img=5'" alt="User" class="w-10 h-10 rounded-full" />
             <div class="flex-1 bg-gray-100 rounded-lg p-3">
               <p class="text-sm font-semibold">{{ comment.author }}</p>
               <p class="text-sm text-gray-700">{{ comment.content }}</p>
               <div class="flex gap-4 text-xs text-gray-500 mt-1">
-                <!-- Like -->
-                <button
-                  @click="toggleLike(comment)"
-                  class="flex items-center gap-1 cursor-pointer"
-                  :class="comment.is_liked ? 'text-blue-600' : 'text-gray-500'"
-                >
-                  <i class="fas fa-thumbs-up"></i>
-                  {{ comment.likes_count }}
+                <button @click="toggleLike(comment)" class="flex items-center gap-1 cursor-pointer" :class="comment.liked_by_me ? 'text-blue-600' : 'text-gray-500'">
+                  <i class="fas fa-thumbs-up"></i> {{ comment.likes_count }}
                 </button>
-
-                <!-- Reply -->
                 <span class="cursor-pointer hover:underline">Balas</span>
-
-                <!-- Hapus -->
-                <button
-                  v-if="user && comment.user_id === user.id"
-                  @click="deleteComment(comment)"
-                  class="text-red-500 hover:underline ml-auto"
-                >
-                  Hapus
-                </button>
+                <button v-if="user && comment.user_id === user.id" @click="deleteComment(comment)" class="text-gray-500 hover:underline ml-auto cursor-pointer"><i class="fa-solid fa-trash"></i></button>
               </div>
             </div>
           </div>
+
+          <!-- Tombol lihat selengkapnya -->
+          <button v-if="comments.length > 2 && !showAllComments" @click="showAllComments = true" class="text-blue-500 hover:underline mb-6 flex ml-auto cursor-pointer">
+            Lihat Selengkapnya
+          </button>
+
         </div>
       </div>
 
@@ -201,6 +183,14 @@ function toggleFavorite() {
 const comments = ref(props.comments)
 const newComment = ref("")
 
+const showAllComments = ref(false)
+
+// computed untuk menampilkan komentar terbatas
+const visibleComments = computed(() => {
+  if (showAllComments.value) return comments.value
+  return comments.value.slice(0, 2) // tampilkan 2 komentar pertama
+})
+
 // add comment
 async function addComment() {
   if (!user.value) {
@@ -233,7 +223,7 @@ async function toggleLike(comment) {
 
   try {
     const res = await axios.post(route("comments.toggle-like", { comment: comment.id }))
-    comment.is_liked = res.data.is_liked
+    comment.liked_by_me = res.data.is_liked
     comment.likes_count = res.data.likes_count
   } catch (err) {
     console.error("Gagal toggle like", err)
